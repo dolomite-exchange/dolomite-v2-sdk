@@ -1,4 +1,4 @@
-import { Token, Currency, CurrencyAmount, Percent, TradeType, validateAndParseAddress } from '@uniswap/sdk-core'
+import { Token, Currency, CurrencyAmount, Percent, TradeType, validateAndParseAddress } from '@dolomite-exchange/sdk-core'
 import { Trade } from 'entities'
 import invariant from 'tiny-invariant'
 
@@ -63,10 +63,12 @@ const ZERO_HEX = '0x0'
  * Represents the Uniswap V2 Router, and has static methods for helping execute trades.
  */
 export abstract class Router {
+  // noinspection JSUnusedLocalSymbols
   /**
    * Cannot be constructed.
    */
   private constructor() {}
+
   /**
    * Produces the on-chain method name to call and the hex encoded parameters to pass as arguments for a given trade.
    * @param trade to produce call parameters for

@@ -1,3 +1,5 @@
+// noinspection ES6PreferShortImport
+
 import {
   computePriceImpact,
   Token,
@@ -8,7 +10,7 @@ import {
   Price,
   sortedInsert,
   TradeType
-} from '@uniswap/sdk-core'
+} from '@dolomite-exchange/sdk-core'
 import { ONE, ZERO } from '../constants'
 import invariant from 'tiny-invariant'
 

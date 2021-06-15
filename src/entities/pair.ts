@@ -1,10 +1,12 @@
-import { BigintIsh, Price, sqrt, Token, CurrencyAmount } from '@uniswap/sdk-core'
+// noinspection ES6PreferShortImport
+
+import { BigintIsh, Price, sqrt, Token, CurrencyAmount } from '@dolomite-exchange/sdk-core'
 import invariant from 'tiny-invariant'
 import JSBI from 'jsbi'
 import { pack, keccak256 } from '@ethersproject/solidity'
 import { getCreate2Address } from '@ethersproject/address'
 
-import { FACTORY_ADDRESS, INIT_CODE_HASH, MINIMUM_LIQUIDITY, FIVE, _997, _1000, ONE, ZERO } from '../constants'
+import { FACTORY_ADDRESSES, INIT_CODE_HASH, MINIMUM_LIQUIDITY, FIVE, _997, _1000, ONE, ZERO } from '../constants'
 import { InsufficientReservesError, InsufficientInputAmountError } from '../errors'
 
 export const computePairAddress = ({
@@ -27,20 +29,20 @@ export class Pair {
   public readonly liquidityToken: Token
   private readonly tokenAmounts: [CurrencyAmount<Token>, CurrencyAmount<Token>]
 
-  public static getAddress(tokenA: Token, tokenB: Token): string {
-    return computePairAddress({ factoryAddress: FACTORY_ADDRESS, tokenA, tokenB })
+  public static getAddress(tokenA: Token, tokenB: Token, chainId?: number): string {
+    return computePairAddress({ factoryAddress: FACTORY_ADDRESSES[chainId ?? 1], tokenA, tokenB })
   }
 
-  public constructor(currencyAmountA: CurrencyAmount<Token>, tokenAmountB: CurrencyAmount<Token>) {
+  public constructor(currencyAmountA: CurrencyAmount<Token>, tokenAmountB: CurrencyAmount<Token>, chainId?: number) {
     const tokenAmounts = currencyAmountA.currency.sortsBefore(tokenAmountB.currency) // does safety checks
       ? [currencyAmountA, tokenAmountB]
       : [tokenAmountB, currencyAmountA]
     this.liquidityToken = new Token(
       tokenAmounts[0].currency.chainId,
-      Pair.getAddress(tokenAmounts[0].currency, tokenAmounts[1].currency),
+      Pair.getAddress(tokenAmounts[0].currency, tokenAmounts[1].currency, chainId),
       18,
-      'UNI-V2',
-      'Uniswap V2'
+      'DLP',
+        'Dolomite LP Token'
     )
     this.tokenAmounts = tokenAmounts as [CurrencyAmount<Token>, CurrencyAmount<Token>]
   }

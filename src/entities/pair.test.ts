@@ -1,4 +1,6 @@
-import { Token, WETH9, Price, CurrencyAmount } from '@uniswap/sdk-core'
+// noinspection ES6PreferShortImport
+
+import { Token, WETH9, Price, CurrencyAmount } from '@dolomite-exchange/sdk-core'
 import { InsufficientInputAmountError } from '../errors'
 import { computePairAddress, Pair } from './pair'
 
@@ -12,7 +14,7 @@ describe('computePairAddress', () => {
       tokenB
     })
 
-    expect(result).toEqual('0xb50b5182D6a47EC53a469395AF44e371d7C76ed4')
+    expect(result).toEqual('0x422C452029f751C7A24aBcC011C73B3e860c3209')
   })
   it('should give same result regardless of token order', () => {
     const USDC = new Token(1, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 18, 'USDC', 'USD Coin')
@@ -51,7 +53,7 @@ describe('Pair', () => {
 
   describe('#getAddress', () => {
     it('returns the correct address', () => {
-      expect(Pair.getAddress(USDC, DAI)).toEqual('0xAE461cA67B15dc8dc81CE7615e0320dA1A9aB8D5')
+      expect(Pair.getAddress(USDC, DAI)).toEqual('0xb622F6A3eE0BC550D4EfB6E2769349566516565d')
     })
   })
 
