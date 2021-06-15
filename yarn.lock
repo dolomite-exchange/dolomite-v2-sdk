@@ -1194,10 +1194,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@dolomite-exchange/sdk-core@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@dolomite-exchange/sdk-core/-/sdk-core-0.0.1.tgz#44cd70cbbaccbd36ed674826a7c5b8d994d4286e"
-  integrity sha512-SvAu/X612YQ7I+uKSQCQfn3GRB0+OjK2e0DxrL/3Zs/otiUj6l/qZlIPMbFETD6Ci7CE4sRbjkwKEGBYO2kahQ==
+"@dolomite-exchange/sdk-core@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@dolomite-exchange/sdk-core/-/sdk-core-1.0.0.tgz#c9bee9725b921b8ae0654b94394a98226ba0d846"
+  integrity sha512-/kKNXFpA+++bCjLBGKxgiSn5mpvkHoI1xqGvWHGOj+H8UHZA+iwoBYlJzL1/C/WnR9PVqXw0jW/swq3emwi+Lg==
   dependencies:
     "@ethersproject/address" "^5.0.2"
     big.js "^5.2.2"
