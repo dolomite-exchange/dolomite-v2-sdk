@@ -1,4 +1,11 @@
-import { Token, Currency, CurrencyAmount, Percent, TradeType, validateAndParseAddress } from '@dolomite-exchange/sdk-core'
+import {
+  Token,
+  Currency,
+  CurrencyAmount,
+  Percent,
+  TradeType,
+  validateAndParseAddress
+} from '@dolomite-exchange/sdk-core'
 import { Trade } from 'entities'
 import invariant from 'tiny-invariant'
 
