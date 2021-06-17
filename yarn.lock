@@ -1194,12 +1194,13 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@dolomite-exchange/sdk-core@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@dolomite-exchange/sdk-core/-/sdk-core-1.0.0.tgz#c9bee9725b921b8ae0654b94394a98226ba0d846"
-  integrity sha512-/kKNXFpA+++bCjLBGKxgiSn5mpvkHoI1xqGvWHGOj+H8UHZA+iwoBYlJzL1/C/WnR9PVqXw0jW/swq3emwi+Lg==
+"@dolomite-exchange/sdk-core@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@dolomite-exchange/sdk-core/-/sdk-core-1.0.4.tgz#8fe5784060c7d685fb8519d9e98deb70cbb17a10"
+  integrity sha512-mvsf/vNoJtp1UJx2f2k1+QtyLoprTtoKKhuQoK/GT+yp+j73bm+vlt3bol3g0iNgBoODcpjuJSMb9GuO/kDKUw==
   dependencies:
     "@ethersproject/address" "^5.0.2"
+    "@uniswap/token-lists" "^1.0.0-beta.24"
     big.js "^5.2.2"
     decimal.js-light "^2.5.0"
     jsbi "^3.1.4"
@@ -1984,6 +1985,11 @@
     lodash "^4.17.15"
     semver "^7.3.2"
     tsutils "^3.17.1"
+
+"@uniswap/token-lists@^1.0.0-beta.24":
+  version "1.0.0-beta.24"
+  resolved "https://registry.yarnpkg.com/@uniswap/token-lists/-/token-lists-1.0.0-beta.24.tgz#6809b80bee58e4a2f235cdedc07113652c85a741"
+  integrity sha512-9IMltV7ITwxnjuK0LYXlUZhYIB8wVAdwx5NAbGjHF9ss+zKL9FTyFfWTFif/EL6PCWvST+2B15ofUwSVZd17RA==
 
 abab@^2.0.0:
   version "2.0.3"
