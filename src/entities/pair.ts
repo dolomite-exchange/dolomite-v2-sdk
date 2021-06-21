@@ -6,16 +6,7 @@ import JSBI from 'jsbi'
 import { pack, keccak256 } from '@ethersproject/solidity'
 import { getCreate2Address } from '@ethersproject/address'
 
-import {
-  FACTORY_ADDRESSES,
-  MINIMUM_LIQUIDITY,
-  FIVE,
-  _997,
-  _1000,
-  ONE,
-  ZERO,
-  INIT_CODE_HASHES
-} from '../constants'
+import { FACTORY_ADDRESSES, MINIMUM_LIQUIDITY, FIVE, _997, _1000, ONE, ZERO, INIT_CODE_HASHES } from '../constants'
 import { InsufficientReservesError, InsufficientInputAmountError } from '../errors'
 
 export const computePairAddress = ({
@@ -29,9 +20,9 @@ export const computePairAddress = ({
 }): string => {
   const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA] // does safety checks
   return getCreate2Address(
-      FACTORY_ADDRESSES[chainId],
-      keccak256(['bytes'], [pack(['address', 'address'], [token0.address, token1.address])]),
-      INIT_CODE_HASHES[chainId],
+    FACTORY_ADDRESSES[chainId],
+    keccak256(['bytes'], [pack(['address', 'address'], [token0.address, token1.address])]),
+    INIT_CODE_HASHES[chainId]
   )
 }
 export class Pair {
