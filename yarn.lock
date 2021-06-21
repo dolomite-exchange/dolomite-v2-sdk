@@ -1194,10 +1194,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@dolomite-exchange/sdk-core@^1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@dolomite-exchange/sdk-core/-/sdk-core-1.0.7.tgz#c6a72bd5dcb7c379602989b184ea5553b358bd51"
-  integrity sha512-bOsETGHn5Lnrjv9xBFvlT791KPrhgbGf56sYHvPUH+a4ZDi99rY/s8Xbpl8XLOBCo1hmEq4G1FfgZ2inR3ovow==
+"@dolomite-exchange/sdk-core@^1.0.12":
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@dolomite-exchange/sdk-core/-/sdk-core-1.0.12.tgz#1e8d03e22ceb8712b9c7fbb09deb8618d10155fc"
+  integrity sha512-FTGh9E0ElFfQxkJ/6Iyxlv8T2oop6RqawkWf4qotKIzw7IjayyjgV4QZTFMeeBqi+TlcKmJn9EFGnUsm6QtHUw==
   dependencies:
     "@ethersproject/address" "^5.0.2"
     "@uniswap/token-lists" "^1.0.0-beta.24"
