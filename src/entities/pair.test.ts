@@ -6,15 +6,15 @@ import { computePairAddress, Pair } from './pair'
 
 describe('computePairAddress', () => {
   it('should correctly compute the pool address', () => {
-    const tokenA = new Token(1, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 18, 'USDC', 'USD Coin')
+    const tokenA = new Token(1, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 6, 'USDC', 'USD Coin')
     const tokenB = new Token(1, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 18, 'DAI', 'DAI Stablecoin')
     const result = computePairAddress({
-      factoryAddress: '0x1111111111111111111111111111111111111111',
+      chainId: 80001,
       tokenA,
       tokenB
     })
 
-    expect(result).toEqual('0x422C452029f751C7A24aBcC011C73B3e860c3209')
+    expect(result).toEqual('0x3d9299E3E690fc9f0b2F0877d302fb210722cACA')
   })
   it('should give same result regardless of token order', () => {
     const USDC = new Token(1, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 18, 'USDC', 'USD Coin')
@@ -22,7 +22,7 @@ describe('computePairAddress', () => {
     let tokenA = USDC
     let tokenB = DAI
     const resultA = computePairAddress({
-      factoryAddress: '0x1111111111111111111111111111111111111111',
+      chainId: 80001,
       tokenA,
       tokenB
     })
@@ -30,7 +30,7 @@ describe('computePairAddress', () => {
     tokenA = DAI
     tokenB = USDC
     const resultB = computePairAddress({
-      factoryAddress: '0x1111111111111111111111111111111111111111',
+      chainId: 80001,
       tokenA,
       tokenB
     })
@@ -53,7 +53,7 @@ describe('Pair', () => {
 
   describe('#getAddress', () => {
     it('returns the correct address', () => {
-      expect(Pair.getAddress(USDC, DAI)).toEqual('0xb622F6A3eE0BC550D4EfB6E2769349566516565d')
+      expect(Pair.getAddress(USDC, DAI, 80001)).toEqual('0x3d9299E3E690fc9f0b2F0877d302fb210722cACA')
     })
   })
 

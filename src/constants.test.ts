@@ -1,6 +1,6 @@
 // noinspection ES6PreferShortImport
 
-import { INIT_CODE_HASH } from './constants'
+import { INIT_CODE_HASHES } from './constants'
 
 import { bytecode } from '@dolomite-exchange/v2-protocol/build/contracts/UniswapV2Pair.json'
 import { keccak256 } from '@ethersproject/solidity'
@@ -12,7 +12,7 @@ const COMPUTED_INIT_CODE_HASH = keccak256(['bytes'], [bytecode])
 describe('constants', () => {
   describe('INIT_CODE_HASH', () => {
     it('matches computed bytecode hash', () => {
-      expect(COMPUTED_INIT_CODE_HASH).toEqual(INIT_CODE_HASH)
+      expect(COMPUTED_INIT_CODE_HASH).toEqual(INIT_CODE_HASHES[80001])
     })
   })
 })
