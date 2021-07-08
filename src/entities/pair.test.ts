@@ -1,6 +1,6 @@
 // noinspection ES6PreferShortImport
 
-import { Token, WETH9, Price, CurrencyAmount } from '@dolomite-exchange/sdk-core'
+import { Token, WETH, Price, CurrencyAmount } from '@dolomite-exchange/sdk-core'
 import { InsufficientInputAmountError } from '../errors'
 import { computePairAddress, Pair } from './pair'
 
@@ -46,7 +46,7 @@ describe('Pair', () => {
   describe('constructor', () => {
     it('cannot be used for tokens on different chains', () => {
       expect(
-        () => new Pair(CurrencyAmount.fromRawAmount(USDC, '100'), CurrencyAmount.fromRawAmount(WETH9[3], '100'))
+        () => new Pair(CurrencyAmount.fromRawAmount(USDC, '100'), CurrencyAmount.fromRawAmount(WETH[3], '100'))
       ).toThrow('CHAIN_IDS')
     })
   })
@@ -128,7 +128,7 @@ describe('Pair', () => {
     })
 
     it('throws if invalid token', () => {
-      expect(() => pair.priceOf(WETH9[1])).toThrow('TOKEN')
+      expect(() => pair.priceOf(WETH[1])).toThrow('TOKEN')
     })
   })
 
@@ -145,7 +145,7 @@ describe('Pair', () => {
     it('throws if not in the pair', () => {
       expect(() =>
         new Pair(CurrencyAmount.fromRawAmount(DAI, '101'), CurrencyAmount.fromRawAmount(USDC, '100')).reserveOf(
-          WETH9[1]
+          WETH[1]
         )
       ).toThrow('TOKEN')
     })
@@ -170,7 +170,7 @@ describe('Pair', () => {
     ).toEqual(true)
     expect(
       new Pair(CurrencyAmount.fromRawAmount(USDC, '100'), CurrencyAmount.fromRawAmount(DAI, '100')).involvesToken(
-        WETH9[1]
+        WETH[1]
       )
     ).toEqual(false)
   })

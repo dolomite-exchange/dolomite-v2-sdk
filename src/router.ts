@@ -4,10 +4,28 @@ import {
   CurrencyAmount,
   Percent,
   TradeType,
-  validateAndParseAddress
 } from '@dolomite-exchange/sdk-core'
 import { Trade } from 'entities'
-import invariant from 'tiny-invariant'
+import JSBI from "jsbi";
+
+/**
+ * Options for opening / modifying a margin position / account
+ */
+export interface MarginOptions {
+  /**
+   * The account number from which the trade will take place.
+   */
+  accountNumber: JSBI
+  /**
+   * The deposit token that will be taken from account number 0 or moved back to account 0 after the trade
+   */
+  depositToken?: string
+  /**
+   * If positive, the amount that will be deposited to `accountNumber` from account number 0. If negative, the amount
+   * withdrawn from `accountNumber` to account number 0.
+   */
+  marginDeposit?: CurrencyAmount<Currency>
+}
 
 /**
  * Options for producing the arguments to send call to the router.
@@ -53,7 +71,7 @@ export interface SwapParameters {
   /**
    * The arguments to pass to the method, all hex encoded.
    */
-  args: (string | string[])[]
+  args: (string | string[] | object)[]
   /**
    * The amount of wei to send in hex.
    */
@@ -79,71 +97,54 @@ export abstract class Router {
   /**
    * Produces the on-chain method name to call and the hex encoded parameters to pass as arguments for a given trade.
    * @param trade to produce call parameters for
-   * @param options options for the call parameters
+   * @param tradeOptions options for the call parameters
+   * @param marginOptions options for modifying a potential margin position
    */
   public static swapCallParameters(
     trade: Trade<Currency, Currency, TradeType>,
-    options: TradeOptions | TradeOptionsDeadline
+    tradeOptions: TradeOptions | TradeOptionsDeadline,
+    marginOptions: MarginOptions
   ): SwapParameters {
-    const etherIn = trade.inputAmount.currency.isNative
-    const etherOut = trade.outputAmount.currency.isNative
-    // the router does not support both ether in and out
-    invariant(!(etherIn && etherOut), 'ETHER_IN_OUT')
-    invariant(!('ttl' in options) || options.ttl > 0, 'TTL')
-
-    const to: string = validateAndParseAddress(options.recipient)
-    const amountIn: string = toHex(trade.maximumAmountIn(options.allowedSlippage))
-    const amountOut: string = toHex(trade.minimumAmountOut(options.allowedSlippage))
+    const amountIn: string = toHex(trade.maximumAmountIn(tradeOptions.allowedSlippage))
+    const amountOut: string = toHex(trade.minimumAmountOut(tradeOptions.allowedSlippage))
+    const depositAmount: string = marginOptions.marginDeposit ? toHex(marginOptions.marginDeposit) : ZERO_HEX
     const path: string[] = trade.route.path.map((token: Token) => token.address)
     const deadline =
-      'ttl' in options
-        ? `0x${(Math.floor(new Date().getTime() / 1000) + options.ttl).toString(16)}`
-        : `0x${options.deadline.toString(16)}`
+      'ttl' in tradeOptions
+        ? `0x${(Math.floor(new Date().getTime() / 1000) + tradeOptions.ttl).toString(16)}`
+        : `0x${tradeOptions.deadline.toString(16)}`
+    const accountNumber = `0x${marginOptions.accountNumber.toString(16)}`
 
-    const useFeeOnTransfer = Boolean(options.feeOnTransfer)
+    const params = {
+      accountNumber: accountNumber,
+      amountInWei: amountIn,
+      amountOutWei: amountOut,
+      tokenPath: path,
+      depositToken: marginOptions.depositToken,
+      marginDeposit: depositAmount,
+    }
 
     let methodName: string
-    let args: (string | string[])[]
+    let args: (string | string[] | object)[]
     let value: string
     switch (trade.tradeType) {
       case TradeType.EXACT_INPUT:
-        if (etherIn) {
-          methodName = useFeeOnTransfer ? 'swapExactETHForTokensSupportingFeeOnTransferTokens' : 'swapExactETHForTokens'
-          // (uint amountOutMin, address[] calldata path, address to, uint deadline)
-          args = [amountOut, path, to, deadline]
-          value = amountIn
-        } else if (etherOut) {
-          methodName = useFeeOnTransfer ? 'swapExactTokensForETHSupportingFeeOnTransferTokens' : 'swapExactTokensForETH'
-          // (uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline)
-          args = [amountIn, amountOut, path, to, deadline]
-          value = ZERO_HEX
-        } else {
-          methodName = useFeeOnTransfer
-            ? 'swapExactTokensForTokensSupportingFeeOnTransferTokens'
+        methodName = marginOptions.marginDeposit
+            ? 'swapExactTokensForTokensAndModifyPosition'
             : 'swapExactTokensForTokens'
-          // (uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline)
-          args = [amountIn, amountOut, path, to, deadline]
-          value = ZERO_HEX
-        }
+        args = marginOptions.marginDeposit
+          ? [params, deadline]
+          : [accountNumber, amountIn, amountOut, path, deadline]
+        value = ZERO_HEX
         break
       case TradeType.EXACT_OUTPUT:
-        invariant(!useFeeOnTransfer, 'EXACT_OUT_FOT')
-        if (etherIn) {
-          methodName = 'swapETHForExactTokens'
-          // (uint amountOut, address[] calldata path, address to, uint deadline)
-          args = [amountOut, path, to, deadline]
-          value = amountIn
-        } else if (etherOut) {
-          methodName = 'swapTokensForExactETH'
-          // (uint amountOut, uint amountInMax, address[] calldata path, address to, uint deadline)
-          args = [amountOut, amountIn, path, to, deadline]
-          value = ZERO_HEX
-        } else {
-          methodName = 'swapTokensForExactTokens'
-          // (uint amountOut, uint amountInMax, address[] calldata path, address to, uint deadline)
-          args = [amountOut, amountIn, path, to, deadline]
-          value = ZERO_HEX
-        }
+        methodName = marginOptions.marginDeposit
+            ? 'swapTokensForExactTokensAndModifyPosition'
+            : 'swapTokensForExactTokens'
+        args = marginOptions.marginDeposit
+            ? [params, deadline]
+            : [accountNumber, amountIn, amountOut, path, deadline]
+        value = ZERO_HEX
         break
     }
     return {
