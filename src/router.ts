@@ -1,12 +1,6 @@
-import {
-  Token,
-  Currency,
-  CurrencyAmount,
-  Percent,
-  TradeType,
-} from '@dolomite-exchange/sdk-core'
+import { Token, Currency, CurrencyAmount, Percent, TradeType } from '@dolomite-exchange/sdk-core'
 import { Trade } from 'entities'
-import JSBI from "jsbi";
+import JSBI from 'jsbi'
 
 /**
  * Options for opening / modifying a margin position / account
@@ -121,7 +115,7 @@ export abstract class Router {
       amountOutWei: amountOut,
       tokenPath: path,
       depositToken: marginOptions.depositToken,
-      marginDeposit: depositAmount,
+      marginDeposit: depositAmount
     }
 
     let methodName: string
@@ -130,20 +124,16 @@ export abstract class Router {
     switch (trade.tradeType) {
       case TradeType.EXACT_INPUT:
         methodName = marginOptions.marginDeposit
-            ? 'swapExactTokensForTokensAndModifyPosition'
-            : 'swapExactTokensForTokens'
-        args = marginOptions.marginDeposit
-          ? [params, deadline]
-          : [accountNumber, amountIn, amountOut, path, deadline]
+          ? 'swapExactTokensForTokensAndModifyPosition'
+          : 'swapExactTokensForTokens'
+        args = marginOptions.marginDeposit ? [params, deadline] : [accountNumber, amountIn, amountOut, path, deadline]
         value = ZERO_HEX
         break
       case TradeType.EXACT_OUTPUT:
         methodName = marginOptions.marginDeposit
-            ? 'swapTokensForExactTokensAndModifyPosition'
-            : 'swapTokensForExactTokens'
-        args = marginOptions.marginDeposit
-            ? [params, deadline]
-            : [accountNumber, amountIn, amountOut, path, deadline]
+          ? 'swapTokensForExactTokensAndModifyPosition'
+          : 'swapTokensForExactTokens'
+        args = marginOptions.marginDeposit ? [params, deadline] : [accountNumber, amountIn, amountOut, path, deadline]
         value = ZERO_HEX
         break
     }
