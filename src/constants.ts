@@ -2,7 +2,7 @@ import JSBI from 'jsbi'
 
 export const FACTORY_ADDRESSES: { [chainId: number]: string } = {
   1: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
-  80001: '0xEF2722Fb0F82F0234D2de7Cc3Afc8379Cbf1dFAC'
+  80001: '0x1ff16ED820F7423A81AA6e86a83F202B90410940'
 }
 
 // was originally this, before merging Dolomite SDK
