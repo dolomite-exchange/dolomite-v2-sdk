@@ -8,7 +8,7 @@ export const FACTORY_ADDRESSES: { [chainId: number]: string } = {
 // was originally this, before merging Dolomite SDK
 export const INIT_CODE_HASHES: { [chainId: number]: string } = {
   1: '0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f',
-  80001: '0x844a2112628391ed9b323bb9db7a4780f6122420fe2e98e5c31537087fa2a6e6'
+  80001: '0x190334d7bd33ceb01178968e2b0b0534655ddc1c8a2c37c6c9e55901dc7ac5c5'
 }
 
 export const MINIMUM_LIQUIDITY = JSBI.BigInt(1000)
