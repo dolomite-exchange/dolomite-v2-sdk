@@ -62,40 +62,48 @@ describe('Pair', () => {
   describe('#token0', () => {
     it('always is the token that sorts before', () => {
       expect(
-        new Pair(CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'), CurrencyAmount.fromRawAmount(MAINNET_DAI, '100')).token0
+        new Pair(CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'), CurrencyAmount.fromRawAmount(MAINNET_DAI, '100'))
+          .token0
       ).toEqual(MAINNET_DAI)
       expect(
-        new Pair(CurrencyAmount.fromRawAmount(MAINNET_DAI, '100'), CurrencyAmount.fromRawAmount(MAINNET_USDC, '100')).token0
+        new Pair(CurrencyAmount.fromRawAmount(MAINNET_DAI, '100'), CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'))
+          .token0
       ).toEqual(MAINNET_DAI)
     })
   })
   describe('#token1', () => {
     it('always is the token that sorts after', () => {
       expect(
-        new Pair(CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'), CurrencyAmount.fromRawAmount(MAINNET_DAI, '100')).token1
+        new Pair(CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'), CurrencyAmount.fromRawAmount(MAINNET_DAI, '100'))
+          .token1
       ).toEqual(MAINNET_USDC)
       expect(
-        new Pair(CurrencyAmount.fromRawAmount(MAINNET_DAI, '100'), CurrencyAmount.fromRawAmount(MAINNET_USDC, '100')).token1
+        new Pair(CurrencyAmount.fromRawAmount(MAINNET_DAI, '100'), CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'))
+          .token1
       ).toEqual(MAINNET_USDC)
     })
   })
   describe('#reserve0', () => {
     it('always comes from the token that sorts before', () => {
       expect(
-        new Pair(CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'), CurrencyAmount.fromRawAmount(MAINNET_DAI, '101')).reserve0
+        new Pair(CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'), CurrencyAmount.fromRawAmount(MAINNET_DAI, '101'))
+          .reserve0
       ).toEqual(CurrencyAmount.fromRawAmount(MAINNET_DAI, '101'))
       expect(
-        new Pair(CurrencyAmount.fromRawAmount(MAINNET_DAI, '101'), CurrencyAmount.fromRawAmount(MAINNET_USDC, '100')).reserve0
+        new Pair(CurrencyAmount.fromRawAmount(MAINNET_DAI, '101'), CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'))
+          .reserve0
       ).toEqual(CurrencyAmount.fromRawAmount(MAINNET_DAI, '101'))
     })
   })
   describe('#reserve1', () => {
     it('always comes from the token that sorts after', () => {
       expect(
-        new Pair(CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'), CurrencyAmount.fromRawAmount(MAINNET_DAI, '101')).reserve1
+        new Pair(CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'), CurrencyAmount.fromRawAmount(MAINNET_DAI, '101'))
+          .reserve1
       ).toEqual(CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'))
       expect(
-        new Pair(CurrencyAmount.fromRawAmount(MAINNET_DAI, '101'), CurrencyAmount.fromRawAmount(MAINNET_USDC, '100')).reserve1
+        new Pair(CurrencyAmount.fromRawAmount(MAINNET_DAI, '101'), CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'))
+          .reserve1
       ).toEqual(CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'))
     })
   })
@@ -103,10 +111,12 @@ describe('Pair', () => {
   describe('#token0Price', () => {
     it('returns price of token0 in terms of token1', () => {
       expect(
-        new Pair(CurrencyAmount.fromRawAmount(MAINNET_USDC, '101'), CurrencyAmount.fromRawAmount(MAINNET_DAI, '100')).token0Price
+        new Pair(CurrencyAmount.fromRawAmount(MAINNET_USDC, '101'), CurrencyAmount.fromRawAmount(MAINNET_DAI, '100'))
+          .token0Price
       ).toEqual(new Price(MAINNET_DAI, MAINNET_USDC, '100', '101'))
       expect(
-        new Pair(CurrencyAmount.fromRawAmount(MAINNET_DAI, '100'), CurrencyAmount.fromRawAmount(MAINNET_USDC, '101')).token0Price
+        new Pair(CurrencyAmount.fromRawAmount(MAINNET_DAI, '100'), CurrencyAmount.fromRawAmount(MAINNET_USDC, '101'))
+          .token0Price
       ).toEqual(new Price(MAINNET_DAI, MAINNET_USDC, '100', '101'))
     })
   })
@@ -114,16 +124,21 @@ describe('Pair', () => {
   describe('#token1Price', () => {
     it('returns price of token1 in terms of token0', () => {
       expect(
-        new Pair(CurrencyAmount.fromRawAmount(MAINNET_USDC, '101'), CurrencyAmount.fromRawAmount(MAINNET_DAI, '100')).token1Price
+        new Pair(CurrencyAmount.fromRawAmount(MAINNET_USDC, '101'), CurrencyAmount.fromRawAmount(MAINNET_DAI, '100'))
+          .token1Price
       ).toEqual(new Price(MAINNET_USDC, MAINNET_DAI, '101', '100'))
       expect(
-        new Pair(CurrencyAmount.fromRawAmount(MAINNET_DAI, '100'), CurrencyAmount.fromRawAmount(MAINNET_USDC, '101')).token1Price
+        new Pair(CurrencyAmount.fromRawAmount(MAINNET_DAI, '100'), CurrencyAmount.fromRawAmount(MAINNET_USDC, '101'))
+          .token1Price
       ).toEqual(new Price(MAINNET_USDC, MAINNET_DAI, '101', '100'))
     })
   })
 
   describe('#priceOf', () => {
-    const pair = new Pair(CurrencyAmount.fromRawAmount(MAINNET_USDC, '101'), CurrencyAmount.fromRawAmount(MAINNET_DAI, '100'))
+    const pair = new Pair(
+      CurrencyAmount.fromRawAmount(MAINNET_USDC, '101'),
+      CurrencyAmount.fromRawAmount(MAINNET_DAI, '100')
+    )
     it('returns price of token in terms of other token', () => {
       expect(pair.priceOf(MAINNET_DAI)).toEqual(pair.token0Price)
       expect(pair.priceOf(MAINNET_USDC)).toEqual(pair.token1Price)
@@ -137,16 +152,25 @@ describe('Pair', () => {
   describe('#reserveOf', () => {
     it('returns reserves of the given token', () => {
       expect(
-        new Pair(CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'), CurrencyAmount.fromRawAmount(MAINNET_DAI, '101')).reserveOf(MAINNET_USDC)
+        new Pair(
+          CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'),
+          CurrencyAmount.fromRawAmount(MAINNET_DAI, '101')
+        ).reserveOf(MAINNET_USDC)
       ).toEqual(CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'))
       expect(
-        new Pair(CurrencyAmount.fromRawAmount(MAINNET_DAI, '101'), CurrencyAmount.fromRawAmount(MAINNET_USDC, '100')).reserveOf(MAINNET_USDC)
+        new Pair(
+          CurrencyAmount.fromRawAmount(MAINNET_DAI, '101'),
+          CurrencyAmount.fromRawAmount(MAINNET_USDC, '100')
+        ).reserveOf(MAINNET_USDC)
       ).toEqual(CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'))
     })
 
     it('throws if not in the pair', () => {
       expect(() =>
-        new Pair(CurrencyAmount.fromRawAmount(MAINNET_DAI, '101'), CurrencyAmount.fromRawAmount(MAINNET_USDC, '100')).reserveOf(WETH[1])
+        new Pair(
+          CurrencyAmount.fromRawAmount(MAINNET_DAI, '101'),
+          CurrencyAmount.fromRawAmount(MAINNET_USDC, '100')
+        ).reserveOf(WETH[1])
       ).toThrow('TOKEN')
     })
   })
@@ -154,24 +178,33 @@ describe('Pair', () => {
   describe('#chainId', () => {
     it('returns the token0 chainId', () => {
       expect(
-        new Pair(CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'), CurrencyAmount.fromRawAmount(MAINNET_DAI, '100')).chainId
+        new Pair(CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'), CurrencyAmount.fromRawAmount(MAINNET_DAI, '100'))
+          .chainId
       ).toEqual(1)
       expect(
-        new Pair(CurrencyAmount.fromRawAmount(MAINNET_DAI, '100'), CurrencyAmount.fromRawAmount(MAINNET_USDC, '100')).chainId
+        new Pair(CurrencyAmount.fromRawAmount(MAINNET_DAI, '100'), CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'))
+          .chainId
       ).toEqual(1)
     })
   })
   describe('#involvesToken', () => {
     expect(
-      new Pair(CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'), CurrencyAmount.fromRawAmount(MAINNET_DAI, '100')).involvesToken(MAINNET_USDC)
+      new Pair(
+        CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'),
+        CurrencyAmount.fromRawAmount(MAINNET_DAI, '100')
+      ).involvesToken(MAINNET_USDC)
     ).toEqual(true)
     expect(
-      new Pair(CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'), CurrencyAmount.fromRawAmount(MAINNET_DAI, '100')).involvesToken(MAINNET_DAI)
+      new Pair(
+        CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'),
+        CurrencyAmount.fromRawAmount(MAINNET_DAI, '100')
+      ).involvesToken(MAINNET_DAI)
     ).toEqual(true)
     expect(
-      new Pair(CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'), CurrencyAmount.fromRawAmount(MAINNET_DAI, '100')).involvesToken(
-        WETH[1]
-      )
+      new Pair(
+        CurrencyAmount.fromRawAmount(MAINNET_USDC, '100'),
+        CurrencyAmount.fromRawAmount(MAINNET_DAI, '100')
+      ).involvesToken(WETH[1])
     ).toEqual(false)
   })
   describe('miscellaneous', () => {
