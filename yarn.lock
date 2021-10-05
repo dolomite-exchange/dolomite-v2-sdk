@@ -1194,10 +1194,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@dolomite-exchange/sdk-core@^1.0.23":
-  version "1.0.23"
-  resolved "https://registry.yarnpkg.com/@dolomite-exchange/sdk-core/-/sdk-core-1.0.23.tgz#4f45c3c8cf85842965bd200070946cef7062ce34"
-  integrity sha512-WtZEWrHAwx14g88+ajbsgleVf1Zeg3GLyRVMtb4RiT91G+wKVLTDYNPvI1eVElNtKmoi+9bW+V4cek9XbXnyfw==
+"@dolomite-exchange/sdk-core@^1.0.24":
+  version "1.0.24"
+  resolved "https://registry.yarnpkg.com/@dolomite-exchange/sdk-core/-/sdk-core-1.0.24.tgz#e2b42c390ea0eed70fb9dd89144dd16e7684c3d1"
+  integrity sha512-FLV7SUVUgpZIZzwkYUPmiy+4ZVXWJnCQO4cV2FD7Lcw+kKv+4JX7qRaJT9BhV2jx1oYR9UgfHtTW0XUUhvY89w==
   dependencies:
     "@ethersproject/address" "^5.0.2"
     "@uniswap/token-lists" "^1.0.0-beta.24"
@@ -1207,10 +1207,10 @@
     tiny-invariant "^1.1.0"
     toformat "^2.0.0"
 
-"@dolomite-exchange/v2-protocol@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@dolomite-exchange/v2-protocol/-/v2-protocol-1.0.2.tgz#6030821ff3022449d81f465248c27989f9433e61"
-  integrity sha512-M6l+xaTkM6Mmc/TXj/2iD3RRjeWW146r2ZYkmUwYopIoMHij21G+QD54jSwEavhct+xEbd+FMObVbDz5QCkCfA==
+"@dolomite-exchange/v2-protocol@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@dolomite-exchange/v2-protocol/-/v2-protocol-1.0.3.tgz#e8a6655ec60a0c3633ed62e712eaf50c744b48f1"
+  integrity sha512-alfDYKRTrag0vQKm7Pnh3x2F7A09c9UMF1WbtR1jVpExbkBuhPtoVtRpv3Hn5dTF+rxvIvEWSbOwzgNVm+aezg==
   dependencies:
     "@dydxprotocol/exchange-wrappers" "0.5.3"
     "@poanet/solidity-flattener" "^3.0.6"

@@ -55,7 +55,7 @@ describe('Pair', () => {
 
   describe('#getAddress', () => {
     it('returns the correct address', () => {
-      expect(Pair.getAddress(MUMBAI_WETH, MUMBAI_USDC, 80001)).toEqual('0xcF4F950077Be104BE83e2AF19510F075278DED8B')
+      expect(Pair.getAddress(MUMBAI_WETH, MUMBAI_USDC, 80001)).toEqual('0x90Bb045AEFbAf3555F44B3CAAa9ACdBfb6F04Dc5')
     })
   })
 
