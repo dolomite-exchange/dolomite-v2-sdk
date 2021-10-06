@@ -118,22 +118,28 @@ export abstract class Router {
       marginDeposit: depositAmount
     }
 
+    const ZERO = JSBI.BigInt('0')
+    const depositTokenBigNumber = marginOptions.depositToken ? JSBI.BigInt(marginOptions.depositToken) : undefined
     let methodName: string
     let args: (string | string[] | object)[]
     let value: string
     switch (trade.tradeType) {
       case TradeType.EXACT_INPUT:
-        methodName = marginOptions.marginDeposit
+        methodName = depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
           ? 'swapExactTokensForTokensAndModifyPosition'
           : 'swapExactTokensForTokens'
-        args = marginOptions.marginDeposit ? [params, deadline] : [accountNumber, amountIn, amountOut, path, deadline]
+        args = depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
+            ? [params, deadline]
+            : [accountNumber, amountIn, amountOut, path, deadline]
         value = ZERO_HEX
         break
       case TradeType.EXACT_OUTPUT:
-        methodName = marginOptions.marginDeposit
+        methodName = depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
           ? 'swapTokensForExactTokensAndModifyPosition'
           : 'swapTokensForExactTokens'
-        args = marginOptions.marginDeposit ? [params, deadline] : [accountNumber, amountIn, amountOut, path, deadline]
+        args = depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
+            ? [params, deadline]
+            : [accountNumber, amountIn, amountOut, path, deadline]
         value = ZERO_HEX
         break
     }
