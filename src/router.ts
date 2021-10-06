@@ -125,19 +125,23 @@ export abstract class Router {
     let value: string
     switch (trade.tradeType) {
       case TradeType.EXACT_INPUT:
-        methodName = depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
-          ? 'swapExactTokensForTokensAndModifyPosition'
-          : 'swapExactTokensForTokens'
-        args = depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
+        methodName =
+          depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
+            ? 'swapExactTokensForTokensAndModifyPosition'
+            : 'swapExactTokensForTokens'
+        args =
+          depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
             ? [params, deadline]
             : [accountNumber, amountIn, amountOut, path, deadline]
         value = ZERO_HEX
         break
       case TradeType.EXACT_OUTPUT:
-        methodName = depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
-          ? 'swapTokensForExactTokensAndModifyPosition'
-          : 'swapTokensForExactTokens'
-        args = depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
+        methodName =
+          depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
+            ? 'swapTokensForExactTokensAndModifyPosition'
+            : 'swapTokensForExactTokens'
+        args =
+          depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
             ? [params, deadline]
             : [accountNumber, amountIn, amountOut, path, deadline]
         value = ZERO_HEX
