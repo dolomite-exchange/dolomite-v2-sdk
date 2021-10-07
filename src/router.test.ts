@@ -93,7 +93,7 @@ describe('Router', () => {
             amountOutWei: '0x59',
             tokenPath: [token0.address, token1.address],
             marginDeposit: `0x${marginOptions.marginDeposit?.quotient.toString(16)}`,
-            isPositiveMarginDeposit: true,
+            isPositiveMarginDeposit: '0x1',
             depositToken: marginOptions.depositToken
           }
         ])
@@ -135,7 +135,7 @@ describe('Router', () => {
             amountOutWei: '0x64',
             tokenPath: [token0.address, token1.address],
             depositToken: marginOptions.depositToken,
-            isPositiveMarginDeposit: true,
+            isPositiveMarginDeposit: '0x1',
             marginDeposit: `0x${marginOptions.marginDeposit?.quotient.toString(16)}`
           }
         ])

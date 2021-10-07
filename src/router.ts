@@ -119,7 +119,7 @@ export abstract class Router {
       amountOutWei: amountOut,
       tokenPath: path,
       depositToken: marginOptions.depositToken,
-      isPositiveMarginDeposit: marginOptions.isPositiveMarginDeposit,
+      isPositiveMarginDeposit: marginOptions.isPositiveMarginDeposit ? '0x1' : '0x0',
       marginDeposit: depositAmount
     }
 
