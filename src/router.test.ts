@@ -1,10 +1,10 @@
 // noinspection ES6PreferShortImport
 
 import JSBI from 'jsbi'
-import {Pair, Route, Trade} from './entities'
-import {AssetDenomination, MarginOptions, Router} from './router'
+import { Pair, Route, Trade } from './entities'
+import { AssetDenomination, MarginOptions, Router } from './router'
 import invariant from 'tiny-invariant'
-import {CurrencyAmount, Percent, Token, WETH} from '@dolomite-exchange/sdk-core'
+import { CurrencyAmount, Percent, Token, WETH } from '@dolomite-exchange/sdk-core'
 
 function checkDeadline(deadline: string[] | string | object): void {
   expect(typeof deadline).toBe('string')
