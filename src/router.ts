@@ -1,7 +1,7 @@
 import { Token, Currency, CurrencyAmount, Percent, TradeType } from '@dolomite-exchange/sdk-core'
 import { Trade } from 'entities'
 import JSBI from 'jsbi'
-import invariant from "tiny-invariant";
+import invariant from 'tiny-invariant'
 
 /**
  * Options for opening / modifying a margin position / account
@@ -127,14 +127,8 @@ export abstract class Router {
     const depositTokenBigNumber = marginOptions.depositToken ? JSBI.BigInt(marginOptions.depositToken) : undefined
     const isMargin = depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
     if (isMargin) {
-      invariant(
-          typeof marginOptions.isPositiveMarginDeposit !== 'undefined',
-          'marginOptions.isPositiveMarginDeposit'
-      )
-      invariant(
-          typeof marginOptions.marginDeposit !== 'undefined',
-          'marginOptions.marginDeposit'
-      )
+      invariant(typeof marginOptions.isPositiveMarginDeposit !== 'undefined', 'marginOptions.isPositiveMarginDeposit')
+      invariant(typeof marginOptions.marginDeposit !== 'undefined', 'marginOptions.marginDeposit')
     }
 
     let methodName: string
@@ -142,14 +136,12 @@ export abstract class Router {
     let value: string
     switch (trade.tradeType) {
       case TradeType.EXACT_INPUT:
-        methodName =
-          isMargin ? 'swapExactTokensForTokensAndModifyPosition' : 'swapExactTokensForTokens'
+        methodName = isMargin ? 'swapExactTokensForTokensAndModifyPosition' : 'swapExactTokensForTokens'
         args = isMargin ? [params, deadline] : [accountNumber, amountIn, amountOut, path, deadline]
         value = ZERO_HEX
         break
       case TradeType.EXACT_OUTPUT:
-        methodName =
-          isMargin ? 'swapTokensForExactTokensAndModifyPosition' : 'swapTokensForExactTokens'
+        methodName = isMargin ? 'swapTokensForExactTokensAndModifyPosition' : 'swapTokensForExactTokens'
         args = isMargin ? [params, deadline] : [accountNumber, amountIn, amountOut, path, deadline]
         value = ZERO_HEX
         break

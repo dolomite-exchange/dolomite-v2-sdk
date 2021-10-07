@@ -30,14 +30,14 @@ describe('Router', () => {
     accountNumber: ZERO,
     depositToken: undefined,
     isPositiveMarginDeposit: undefined,
-    marginDeposit: undefined,
+    marginDeposit: undefined
   }
 
   const marginOptions: MarginOptions = {
     accountNumber: defaultMarginOptions.accountNumber,
     depositToken: token0.address,
     isPositiveMarginDeposit: true,
-    marginDeposit: pair_0_1.reserve0,
+    marginDeposit: pair_0_1.reserve0
   }
 
   describe('#swapCallParameters', () => {
@@ -136,7 +136,7 @@ describe('Router', () => {
             tokenPath: [token0.address, token1.address],
             depositToken: marginOptions.depositToken,
             isPositiveMarginDeposit: true,
-            marginDeposit: `0x${marginOptions.marginDeposit?.quotient.toString(16)}`,
+            marginDeposit: `0x${marginOptions.marginDeposit?.quotient.toString(16)}`
           }
         ])
         expect(result.value).toEqual('0x0')
