@@ -3,6 +3,11 @@ import { Trade } from 'entities'
 import JSBI from 'jsbi'
 import invariant from 'tiny-invariant'
 
+export enum AssetDenomination {
+  Wei = 0,
+  Par = 1,
+}
+
 /**
  * Options for opening / modifying a margin position / account
  */
@@ -11,6 +16,10 @@ export interface MarginOptions {
    * The account number from which the trade will take place.
    */
   accountNumber: JSBI
+  /**
+   * The type of values that are being passed through for swapping, excluding the margin deposit
+   */
+  denomination: AssetDenomination
   /**
    * The deposit token that will be taken from account number 0 or moved back to account 0 after the trade
    */
@@ -103,6 +112,8 @@ export abstract class Router {
     tradeOptions: TradeOptions | TradeOptionsDeadline,
     marginOptions: MarginOptions
   ): SwapParameters {
+    const accountNumber = `0x${marginOptions.accountNumber.toString(16)}`
+    const denomination = `0x${marginOptions.denomination.toString(16)}`
     const amountIn: string = toHex(trade.maximumAmountIn(tradeOptions.allowedSlippage))
     const amountOut: string = toHex(trade.minimumAmountOut(tradeOptions.allowedSlippage))
     const depositAmount: string = marginOptions.marginDeposit ? toHex(marginOptions.marginDeposit) : ZERO_HEX
@@ -111,10 +122,10 @@ export abstract class Router {
       'ttl' in tradeOptions
         ? `0x${(Math.floor(new Date().getTime() / 1000) + tradeOptions.ttl).toString(16)}`
         : `0x${tradeOptions.deadline.toString(16)}`
-    const accountNumber = `0x${marginOptions.accountNumber.toString(16)}`
 
     const params = {
       accountNumber: accountNumber,
+      denomination: denomination,
       amountInWei: amountIn,
       amountOutWei: amountOut,
       tokenPath: path,

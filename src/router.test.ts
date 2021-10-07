@@ -1,10 +1,10 @@
 // noinspection ES6PreferShortImport
 
 import JSBI from 'jsbi'
-import { Pair, Route, Trade } from './entities'
-import { MarginOptions, Router } from './router'
+import {Pair, Route, Trade} from './entities'
+import {AssetDenomination, MarginOptions, Router} from './router'
 import invariant from 'tiny-invariant'
-import { CurrencyAmount, Percent, Token, WETH } from '@dolomite-exchange/sdk-core'
+import {CurrencyAmount, Percent, Token, WETH} from '@dolomite-exchange/sdk-core'
 
 function checkDeadline(deadline: string[] | string | object): void {
   expect(typeof deadline).toBe('string')
@@ -28,6 +28,7 @@ describe('Router', () => {
 
   const defaultMarginOptions: MarginOptions = {
     accountNumber: ZERO,
+    denomination: AssetDenomination.Par,
     depositToken: undefined,
     isPositiveMarginDeposit: undefined,
     marginDeposit: undefined
@@ -35,6 +36,7 @@ describe('Router', () => {
 
   const marginOptions: MarginOptions = {
     accountNumber: defaultMarginOptions.accountNumber,
+    denomination: AssetDenomination.Wei,
     depositToken: token0.address,
     isPositiveMarginDeposit: true,
     marginDeposit: pair_0_1.reserve0
@@ -89,6 +91,7 @@ describe('Router', () => {
         expect(result.args.slice(0, -1)).toEqual([
           {
             accountNumber: '0x0',
+            denomination: '0x0',
             amountInWei: '0x64',
             amountOutWei: '0x59',
             tokenPath: [token0.address, token1.address],
@@ -131,6 +134,7 @@ describe('Router', () => {
         expect(result.args.slice(0, -1)).toEqual([
           {
             accountNumber: '0x0',
+            denomination: '0x0',
             amountInWei: '0x71',
             amountOutWei: '0x64',
             tokenPath: [token0.address, token1.address],
