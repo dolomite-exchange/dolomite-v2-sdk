@@ -126,8 +126,8 @@ export abstract class Router {
     const params = {
       accountNumber: accountNumber,
       denomination: denomination,
-      amountInWei: amountIn,
-      amountOutWei: amountOut,
+      amountIn: amountIn,
+      amountOut: amountOut,
       tokenPath: path,
       depositToken: marginOptions.depositToken,
       isPositiveMarginDeposit: marginOptions.isPositiveMarginDeposit ? '0x1' : '0x0',
