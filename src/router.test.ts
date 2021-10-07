@@ -27,13 +27,17 @@ describe('Router', () => {
   const pair_weth_0 = new Pair(CurrencyAmount.fromRawAmount(weth, '1000'), CurrencyAmount.fromRawAmount(token0, '1000'))
 
   const defaultMarginOptions: MarginOptions = {
-    accountNumber: ZERO
+    accountNumber: ZERO,
+    depositToken: undefined,
+    isPositiveMarginDeposit: undefined,
+    marginDeposit: undefined,
   }
 
   const marginOptions: MarginOptions = {
     accountNumber: defaultMarginOptions.accountNumber,
     depositToken: token0.address,
-    marginDeposit: pair_0_1.reserve0
+    isPositiveMarginDeposit: true,
+    marginDeposit: pair_0_1.reserve0,
   }
 
   describe('#swapCallParameters', () => {
@@ -89,6 +93,7 @@ describe('Router', () => {
             amountOutWei: '0x59',
             tokenPath: [token0.address, token1.address],
             marginDeposit: `0x${marginOptions.marginDeposit?.quotient.toString(16)}`,
+            isPositiveMarginDeposit: true,
             depositToken: marginOptions.depositToken
           }
         ])
@@ -130,7 +135,8 @@ describe('Router', () => {
             amountOutWei: '0x64',
             tokenPath: [token0.address, token1.address],
             depositToken: marginOptions.depositToken,
-            marginDeposit: `0x${marginOptions.marginDeposit?.quotient.toString(16)}`
+            isPositiveMarginDeposit: true,
+            marginDeposit: `0x${marginOptions.marginDeposit?.quotient.toString(16)}`,
           }
         ])
         expect(result.value).toEqual('0x0')

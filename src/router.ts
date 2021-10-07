@@ -1,6 +1,7 @@
 import { Token, Currency, CurrencyAmount, Percent, TradeType } from '@dolomite-exchange/sdk-core'
 import { Trade } from 'entities'
 import JSBI from 'jsbi'
+import invariant from "tiny-invariant";
 
 /**
  * Options for opening / modifying a margin position / account
@@ -13,12 +14,15 @@ export interface MarginOptions {
   /**
    * The deposit token that will be taken from account number 0 or moved back to account 0 after the trade
    */
-  depositToken?: string
+  depositToken: string | undefined
   /**
-   * If positive, the amount that will be deposited to `accountNumber` from account number 0. If negative, the amount
-   * withdrawn from `accountNumber` to account number 0.
+   * If positive, the amount to deposited into `accountNumber` or if negative, the amount to be withdrawn.
    */
-  marginDeposit?: CurrencyAmount<Currency>
+  isPositiveMarginDeposit: boolean | undefined
+  /**
+   * The amount to be deposited or withdrawn from/to `accountNumber` depending on `isPositiveMarginDeposit`
+   */
+  marginDeposit: CurrencyAmount<Currency> | undefined
 }
 
 /**
@@ -115,31 +119,36 @@ export abstract class Router {
       amountOutWei: amountOut,
       tokenPath: path,
       depositToken: marginOptions.depositToken,
+      isPositiveMarginDeposit: marginOptions.isPositiveMarginDeposit,
       marginDeposit: depositAmount
     }
 
     const ZERO = JSBI.BigInt('0')
     const depositTokenBigNumber = marginOptions.depositToken ? JSBI.BigInt(marginOptions.depositToken) : undefined
+    const isMargin = depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
+    if (isMargin) {
+      invariant(
+          typeof marginOptions.isPositiveMarginDeposit !== 'undefined',
+          'marginOptions.isPositiveMarginDeposit'
+      )
+      invariant(
+          typeof marginOptions.marginDeposit !== 'undefined',
+          'marginOptions.marginDeposit'
+      )
+    }
+
     let methodName: string
     let args: (string | string[] | object)[]
     let value: string
     switch (trade.tradeType) {
       case TradeType.EXACT_INPUT:
-        methodName = depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
-          ? 'swapExactTokensForTokensAndModifyPosition'
-          : 'swapExactTokensForTokens'
-        args = depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
-            ? [params, deadline]
-            : [accountNumber, amountIn, amountOut, path, deadline]
+        methodName = isMargin ? 'swapExactTokensForTokensAndModifyPosition' : 'swapExactTokensForTokens'
+        args = isMargin ? [params, deadline] : [accountNumber, amountIn, amountOut, path, deadline]
         value = ZERO_HEX
         break
       case TradeType.EXACT_OUTPUT:
-        methodName = depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
-          ? 'swapTokensForExactTokensAndModifyPosition'
-          : 'swapTokensForExactTokens'
-        args = depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
-            ? [params, deadline]
-            : [accountNumber, amountIn, amountOut, path, deadline]
+        methodName = isMargin ? 'swapTokensForExactTokensAndModifyPosition' : 'swapTokensForExactTokens'
+        args = isMargin ? [params, deadline] : [accountNumber, amountIn, amountOut, path, deadline]
         value = ZERO_HEX
         break
     }
