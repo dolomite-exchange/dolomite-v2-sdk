@@ -5,7 +5,7 @@ import invariant from 'tiny-invariant'
 
 export enum AssetDenomination {
   Wei = 0,
-  Par = 1,
+  Par = 1
 }
 
 /**
