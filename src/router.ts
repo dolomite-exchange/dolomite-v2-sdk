@@ -19,7 +19,6 @@ export interface AssetAmount {
   value: string
 }
 
-
 /**
  * Options for opening / modifying a margin position / account
  */
@@ -159,7 +158,7 @@ export abstract class Router {
       sign: toHex(marginOptions.isAmountInPositive),
       denomination: toHex(marginOptions.denomination),
       ref: toHex(AssetReference.Delta),
-      value: toHex(trade.maximumAmountIn(tradeOptions.allowedSlippage)),
+      value: toHex(trade.maximumAmountIn(tradeOptions.allowedSlippage))
     }
     const amountOut: AssetAmount = {
       sign: toHex(marginOptions.isAmountOutPositive),

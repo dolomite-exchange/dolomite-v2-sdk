@@ -2,7 +2,7 @@
 
 import JSBI from 'jsbi'
 import { Pair, Route, Trade } from './entities'
-import {AssetDenomination, MarginOptions, Router} from './router'
+import { AssetDenomination, MarginOptions, Router } from './router'
 import invariant from 'tiny-invariant'
 import { CurrencyAmount, Percent, Token, WETH } from '@dolomite-exchange/sdk-core'
 
@@ -134,7 +134,10 @@ describe('Router', () => {
         checkDeadline(result.args[result.args.length - 1])
       })
       it('token0 to token1 with non-default margin options', () => {
-        const trade = Trade.exactOut(new Route([pair_0_1], token0, token1), CurrencyAmount.fromRawAmount(token1, JSBI.BigInt(100)))
+        const trade = Trade.exactOut(
+          new Route([pair_0_1], token0, token1),
+          CurrencyAmount.fromRawAmount(token1, JSBI.BigInt(100))
+        )
         const slippageTolerance = new Percent('1', '100')
         const result = Router.swapCallParameters(
           trade,
