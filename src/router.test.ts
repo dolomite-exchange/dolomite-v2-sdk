@@ -2,7 +2,7 @@
 
 import JSBI from 'jsbi'
 import { Pair, Route, Trade } from './entities'
-import { AssetDenomination, MarginOptions, Router } from './router'
+import {AssetDenomination, MarginOptions, Router} from './router'
 import invariant from 'tiny-invariant'
 import { CurrencyAmount, Percent, Token, WETH } from '@dolomite-exchange/sdk-core'
 
@@ -29,6 +29,8 @@ describe('Router', () => {
   const defaultMarginOptions: MarginOptions = {
     accountNumber: ZERO,
     denomination: AssetDenomination.Par,
+    isAmountInPositive: true,
+    isAmountOutPositive: true,
     depositToken: undefined,
     isPositiveMarginDeposit: undefined,
     marginDeposit: undefined
@@ -37,6 +39,8 @@ describe('Router', () => {
   const marginOptions: MarginOptions = {
     accountNumber: defaultMarginOptions.accountNumber,
     denomination: AssetDenomination.Wei,
+    isAmountInPositive: true,
+    isAmountOutPositive: false,
     depositToken: token0.address,
     isPositiveMarginDeposit: true,
     marginDeposit: pair_0_1.reserve0
@@ -91,9 +95,18 @@ describe('Router', () => {
         expect(result.args.slice(0, -1)).toEqual([
           {
             accountNumber: '0x0',
-            denomination: '0x0',
-            amountIn: '0x64',
-            amountOut: '0x59',
+            amountIn: {
+              sign: '0x1',
+              ref: '0x0',
+              denomination: '0x0',
+              value: '0x64'
+            },
+            amountOut: {
+              sign: '0x0',
+              ref: '0x0',
+              denomination: '0x0',
+              value: '0x59'
+            },
             tokenPath: [token0.address, token1.address],
             marginDeposit: `0x${marginOptions.marginDeposit?.quotient.toString(16)}`,
             isPositiveMarginDeposit: '0x1',
@@ -121,12 +134,14 @@ describe('Router', () => {
         checkDeadline(result.args[result.args.length - 1])
       })
       it('token0 to token1 with non-default margin options', () => {
+        const trade = Trade.exactOut(new Route([pair_0_1], token0, token1), CurrencyAmount.fromRawAmount(token1, JSBI.BigInt(100)))
+        const slippageTolerance = new Percent('1', '100')
         const result = Router.swapCallParameters(
-          Trade.exactOut(new Route([pair_0_1], token0, token1), CurrencyAmount.fromRawAmount(token1, JSBI.BigInt(100))),
+          trade,
           {
             ttl: 50,
             recipient: '0x0000000000000000000000000000000000000004',
-            allowedSlippage: new Percent('1', '100')
+            allowedSlippage: slippageTolerance
           },
           marginOptions
         )
@@ -134,9 +149,18 @@ describe('Router', () => {
         expect(result.args.slice(0, -1)).toEqual([
           {
             accountNumber: '0x0',
-            denomination: '0x0',
-            amountIn: '0x71',
-            amountOut: '0x64',
+            amountIn: {
+              denomination: '0x0',
+              ref: '0x0',
+              sign: '0x1',
+              value: '0x71'
+            },
+            amountOut: {
+              denomination: '0x0',
+              ref: '0x0',
+              sign: '0x0',
+              value: '0x64'
+            },
             tokenPath: [token0.address, token1.address],
             depositToken: marginOptions.depositToken,
             isPositiveMarginDeposit: '0x1',

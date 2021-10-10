@@ -8,6 +8,18 @@ export enum AssetDenomination {
   Par = 1
 }
 
+export enum AssetReference {
+  Delta = 0
+}
+
+export interface AssetAmount {
+  sign: string
+  denomination: string
+  ref: string
+  value: string
+}
+
+
 /**
  * Options for opening / modifying a margin position / account
  */
@@ -21,6 +33,16 @@ export interface MarginOptions {
    */
   denomination: AssetDenomination
   /**
+   * True if the currency represented by amountIn for the trade has a positive balance in the user's margin account.
+   * False if the balance is negative
+   */
+  isAmountInPositive: boolean
+  /**
+   * True if the currency represented by amountOut for the trade has a positive balance in the user's margin account.
+   * False if the balance is negative
+   */
+  isAmountOutPositive: boolean
+  /**
    * The deposit token that will be taken from account number 0 or moved back to account 0 after the trade
    */
   depositToken: string | undefined
@@ -32,6 +54,16 @@ export interface MarginOptions {
    * The amount to be deposited or withdrawn from/to `accountNumber` depending on `isPositiveMarginDeposit`
    */
   marginDeposit: CurrencyAmount<Currency> | undefined
+}
+
+export interface ModifyPositionParams {
+  accountNumber: string
+  amountIn: AssetAmount
+  amountOut: AssetAmount
+  tokenPath: string[]
+  depositToken: string
+  isPositiveMarginDeposit: string
+  marginDeposit: string
 }
 
 /**
@@ -85,11 +117,21 @@ export interface SwapParameters {
   value: string
 }
 
-function toHex(currencyAmount: CurrencyAmount<Currency>) {
-  return `0x${currencyAmount.quotient.toString(16)}`
-}
-
 const ZERO_HEX = '0x0'
+
+function toHex(value?: JSBI | CurrencyAmount<Currency> | number | boolean): string {
+  if (value instanceof JSBI) {
+    return `0x${value.toString(16)}`
+  } else if (value instanceof CurrencyAmount) {
+    return `0x${value.quotient.toString(16)}`
+  } else if (typeof value === 'number') {
+    return `0x${value.toString(16)}`
+  } else if (typeof value === 'boolean') {
+    return `0x${value ? '1' : '0'}`
+  } else {
+    return ZERO_HEX
+  }
+}
 
 /**
  * Represents the Uniswap V2 Router, and has static methods for helping execute trades.
@@ -112,25 +154,33 @@ export abstract class Router {
     tradeOptions: TradeOptions | TradeOptionsDeadline,
     marginOptions: MarginOptions
   ): SwapParameters {
-    const accountNumber = `0x${marginOptions.accountNumber.toString(16)}`
-    const denomination = `0x${marginOptions.denomination.toString(16)}`
-    const amountIn: string = toHex(trade.maximumAmountIn(tradeOptions.allowedSlippage))
-    const amountOut: string = toHex(trade.minimumAmountOut(tradeOptions.allowedSlippage))
-    const depositAmount: string = marginOptions.marginDeposit ? toHex(marginOptions.marginDeposit) : ZERO_HEX
+    const accountNumber = toHex(marginOptions.accountNumber)
+    const amountIn: AssetAmount = {
+      sign: toHex(marginOptions.isAmountInPositive),
+      denomination: toHex(marginOptions.denomination),
+      ref: toHex(AssetReference.Delta),
+      value: toHex(trade.maximumAmountIn(tradeOptions.allowedSlippage)),
+    }
+    const amountOut: AssetAmount = {
+      sign: toHex(marginOptions.isAmountOutPositive),
+      denomination: toHex(marginOptions.denomination),
+      ref: toHex(AssetReference.Delta),
+      value: toHex(trade.minimumAmountOut(tradeOptions.allowedSlippage))
+    }
+    const depositAmount = toHex(marginOptions.marginDeposit)
     const path: string[] = trade.route.path.map((token: Token) => token.address)
     const deadline =
       'ttl' in tradeOptions
-        ? `0x${(Math.floor(new Date().getTime() / 1000) + tradeOptions.ttl).toString(16)}`
-        : `0x${tradeOptions.deadline.toString(16)}`
+        ? toHex(Math.floor(new Date().getTime() / 1000) + tradeOptions.ttl)
+        : toHex(tradeOptions.deadline)
 
-    const params = {
+    const params: ModifyPositionParams = {
       accountNumber: accountNumber,
-      denomination: denomination,
       amountIn: amountIn,
       amountOut: amountOut,
       tokenPath: path,
-      depositToken: marginOptions.depositToken,
-      isPositiveMarginDeposit: marginOptions.isPositiveMarginDeposit ? '0x1' : '0x0',
+      depositToken: marginOptions.depositToken ?? '0x0000000000000000000000000000000000000000',
+      isPositiveMarginDeposit: toHex(marginOptions.isPositiveMarginDeposit ?? false),
       marginDeposit: depositAmount
     }
 
@@ -148,12 +198,12 @@ export abstract class Router {
     switch (trade.tradeType) {
       case TradeType.EXACT_INPUT:
         methodName = isMargin ? 'swapExactTokensForTokensAndModifyPosition' : 'swapExactTokensForTokens'
-        args = isMargin ? [params, deadline] : [accountNumber, amountIn, amountOut, path, deadline]
+        args = isMargin ? [params, deadline] : [accountNumber, amountIn.value, amountOut.value, path, deadline]
         value = ZERO_HEX
         break
       case TradeType.EXACT_OUTPUT:
         methodName = isMargin ? 'swapTokensForExactTokensAndModifyPosition' : 'swapTokensForExactTokens'
-        args = isMargin ? [params, deadline] : [accountNumber, amountIn, amountOut, path, deadline]
+        args = isMargin ? [params, deadline] : [accountNumber, amountIn.value, amountOut.value, path, deadline]
         value = ZERO_HEX
         break
     }
