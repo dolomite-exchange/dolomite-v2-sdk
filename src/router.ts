@@ -13,7 +13,7 @@ export enum AssetReference {
 }
 
 export interface AssetAmount {
-  sign: string
+  sign: boolean
   denomination: string
   ref: string
   value: string
@@ -62,7 +62,7 @@ export interface ModifyPositionParams {
   amountOut: AssetAmount
   tokenPath: string[]
   depositToken: string
-  isPositiveMarginDeposit: string
+  isPositiveMarginDeposit: boolean
   marginDeposit: string
 }
 
@@ -119,15 +119,13 @@ export interface SwapParameters {
 
 const ZERO_HEX = '0x0'
 
-function toHex(value?: JSBI | CurrencyAmount<Currency> | number | boolean): string {
+function toHex(value?: JSBI | CurrencyAmount<Currency> | number): string {
   if (value instanceof JSBI) {
     return `0x${value.toString(16)}`
   } else if (value instanceof CurrencyAmount) {
     return `0x${value.quotient.toString(16)}`
   } else if (typeof value === 'number') {
     return `0x${value.toString(16)}`
-  } else if (typeof value === 'boolean') {
-    return `0x${value ? '1' : '0'}`
   } else {
     return ZERO_HEX
   }
@@ -156,13 +154,13 @@ export abstract class Router {
   ): SwapParameters {
     const accountNumber = toHex(marginOptions.accountNumber)
     const amountIn: AssetAmount = {
-      sign: toHex(marginOptions.isAmountInPositive),
+      sign: marginOptions.isAmountInPositive,
       denomination: toHex(marginOptions.denomination),
       ref: toHex(AssetReference.Delta),
       value: toHex(trade.maximumAmountIn(tradeOptions.allowedSlippage)),
     }
     const amountOut: AssetAmount = {
-      sign: toHex(marginOptions.isAmountOutPositive),
+      sign: marginOptions.isAmountOutPositive,
       denomination: toHex(marginOptions.denomination),
       ref: toHex(AssetReference.Delta),
       value: toHex(trade.minimumAmountOut(tradeOptions.allowedSlippage))
@@ -180,7 +178,7 @@ export abstract class Router {
       amountOut: amountOut,
       tokenPath: path,
       depositToken: marginOptions.depositToken ?? '0x0000000000000000000000000000000000000000',
-      isPositiveMarginDeposit: toHex(marginOptions.isPositiveMarginDeposit ?? false),
+      isPositiveMarginDeposit: marginOptions.isPositiveMarginDeposit ?? false,
       marginDeposit: depositAmount
     }
 
