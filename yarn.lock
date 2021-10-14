@@ -1207,10 +1207,10 @@
     tiny-invariant "^1.1.0"
     toformat "^2.0.0"
 
-"@dolomite-exchange/v2-protocol@^1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@dolomite-exchange/v2-protocol/-/v2-protocol-1.0.7.tgz#fd0c93ac5617ed2b552fbc58bdba4de119e4af67"
-  integrity sha512-yGx3K3Jluezuj5q5rCk/G/kFWxTudnYDMpijhPxdpakI+Fq+xGgRUvq/TzXs2TjilAveR01hrrXuZmI8av8Kfw==
+"@dolomite-exchange/v2-protocol@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@dolomite-exchange/v2-protocol/-/v2-protocol-1.0.8.tgz#c1bee7287884cd4cf6a3e424e458f6142f130e91"
+  integrity sha512-YYLmXabHdxZvqq0Pv8vElABFgSQ2etRzp2BZS9DX19vEiimZbm15ZUAYnPAkX1XCBe+/puCU6x5etF8ZbV1Tjw==
   dependencies:
     "@dydxprotocol/exchange-wrappers" "0.5.3"
     "@poanet/solidity-flattener" "^3.0.6"

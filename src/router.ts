@@ -54,6 +54,10 @@ export interface MarginOptions {
    * The amount to be deposited or withdrawn from/to `accountNumber` depending on `isPositiveMarginDeposit`
    */
   marginDeposit: CurrencyAmount<Currency> | undefined
+  /**
+   * The number of seconds until the position expires. 3600 equals one hour.
+   */
+  expiryTimeDelta: number
 }
 
 export interface ModifyPositionParams {
@@ -64,6 +68,7 @@ export interface ModifyPositionParams {
   depositToken: string
   isPositiveMarginDeposit: boolean
   marginDeposit: string
+  expiryTimeDelta: string
 }
 
 /**
@@ -166,6 +171,7 @@ export abstract class Router {
       value: toHex(trade.minimumAmountOut(tradeOptions.allowedSlippage))
     }
     const depositAmount = toHex(marginOptions.marginDeposit)
+    const expiryTimeDelta = toHex(marginOptions.expiryTimeDelta)
     const path: string[] = trade.route.path.map((token: Token) => token.address)
     const deadline =
       'ttl' in tradeOptions
@@ -179,7 +185,8 @@ export abstract class Router {
       tokenPath: path,
       depositToken: marginOptions.depositToken ?? '0x0000000000000000000000000000000000000000',
       isPositiveMarginDeposit: marginOptions.isPositiveMarginDeposit ?? false,
-      marginDeposit: depositAmount
+      marginDeposit: depositAmount,
+      expiryTimeDelta: expiryTimeDelta
     }
 
     const ZERO = JSBI.BigInt('0')
