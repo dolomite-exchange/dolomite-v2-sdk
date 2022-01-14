@@ -1,7 +1,7 @@
 {
   "name": "@dolomite-exchange/v2-sdk",
   "license": "MIT",
-  "version": "0.1.26",
+  "version": "0.1.27",
   "description": "🛠 An SDK for building applications on top of Dolomite V2",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -15,15 +15,15 @@
   ],
   "module": "dist/v2-sdk.esm.js",
   "scripts": {
-    "lint": "tsdx lint src test",
+    "lint": "tsdx lint src",
     "build": "tsdx build",
     "start": "tsdx watch",
     "test": "tsdx test",
     "prepublishOnly": "tsdx build"
   },
   "dependencies": {
+    "@dolomite-exchange/dolomite-margin": "^0.1.6",
     "@dolomite-exchange/sdk-core": "^1.0.24",
-    "@dolomite-exchange/v2-protocol": "^1.0.8",
     "@ethersproject/address": "^5.0.0",
     "@ethersproject/solidity": "^5.0.0",
     "tiny-invariant": "^1.1.0",
