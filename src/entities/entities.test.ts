@@ -1,6 +1,6 @@
 import JSBI from 'jsbi'
 import invariant from 'tiny-invariant'
-import { WETH as _WETH, TradeType, Token, CurrencyAmount } from '@dolomite-exchange/sdk-core'
+import { WRAPPED_CURRENCY, TradeType, Token, CurrencyAmount } from '@dolomite-exchange/sdk-core'
 import { Pair, Route, Trade } from '../index'
 
 const ADDRESSES = [
@@ -9,7 +9,7 @@ const ADDRESSES = [
   '0x0000000000000000000000000000000000000003'
 ]
 const CHAIN_ID = 3
-const WETH = _WETH[3]
+const WETH = WRAPPED_CURRENCY[3]
 const DECIMAL_PERMUTATIONS: [number, number, number][] = [
   [0, 0, 0],
   [0, 9, 18],

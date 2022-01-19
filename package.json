@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@dolomite-exchange/dolomite-margin": "^0.1.6",
-    "@dolomite-exchange/sdk-core": "^1.0.27",
+    "@dolomite-exchange/sdk-core": "^1.0.28",
     "@ethersproject/address": "^5.0.0",
     "@ethersproject/solidity": "^5.0.0",
     "tiny-invariant": "^1.1.0",

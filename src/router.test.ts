@@ -4,7 +4,7 @@ import JSBI from 'jsbi'
 import { Pair, Route, Trade } from './entities'
 import { AssetDenomination, MarginOptions, Router } from './router'
 import invariant from 'tiny-invariant'
-import { CurrencyAmount, Percent, Token, WETH } from '@dolomite-exchange/sdk-core'
+import { CurrencyAmount, Percent, Token, WRAPPED_CURRENCY } from '@dolomite-exchange/sdk-core'
 
 function checkDeadline(deadline: string[] | string | object): void {
   expect(typeof deadline).toBe('string')
@@ -15,7 +15,7 @@ function checkDeadline(deadline: string[] | string | object): void {
 
 describe('Router', () => {
   const ZERO = JSBI.BigInt('0')
-  const weth = WETH[1]
+  const weth = WRAPPED_CURRENCY[1]
   const token0 = new Token(1, '0x0000000000000000000000000000000000000001', 18, 't0')
   const token1 = new Token(1, '0x0000000000000000000000000000000000000002', 18, 't1')
 

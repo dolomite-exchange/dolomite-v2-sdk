@@ -1211,10 +1211,10 @@
     query-string "^6.9.0"
     web3 "1.2.1"
 
-"@dolomite-exchange/sdk-core@^1.0.27":
-  version "1.0.27"
-  resolved "https://registry.yarnpkg.com/@dolomite-exchange/sdk-core/-/sdk-core-1.0.27.tgz#88ca502e523b60277b43a54decef647eeffe2f00"
-  integrity sha512-0yJZ3Hc9UUbxYWJu3wcVNo0yzx9whMz4kUK/rtJ8Z5yRqhQanuaTqSPF5jBvtTsvfZpPnRgqED24K+0KzsAJMA==
+"@dolomite-exchange/sdk-core@^1.0.28":
+  version "1.0.28"
+  resolved "https://registry.yarnpkg.com/@dolomite-exchange/sdk-core/-/sdk-core-1.0.28.tgz#872d1239b0fbf4e82ab680f951d314e572d09214"
+  integrity sha512-Z7E/IFKA+ZVIPzscPTW8W4ij66qHgbbJOcfRjU6CuuVgPjauqqQ2q4YTCQNi1u3I7nJl2X1kPxIa9mxLqBSZVg==
   dependencies:
     "@ethersproject/address" "^5.0.2"
     "@uniswap/token-lists" "^1.0.0-beta.24"
