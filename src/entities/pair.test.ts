@@ -44,6 +44,10 @@ describe('Pair', () => {
   const MAINNET_DAI = new Token(1, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 18, 'DAI', 'DAI Stablecoin')
   const MUMBAI_USDC = new Token(800001, '0xaDe692C9B8C36e6b04bCFD01f0E91c7EbeE0A160', 6, 'USDC', 'USD Coin')
   const MUMBAI_WETH = new Token(800001, '0xa38eF095D071ebBAFeA5E7D1Ce02BE79fc376793', 18, 'WETH', 'Wrapped Ether')
+  const ARBITRUM_USDC = new Token(42161, '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8', 6, 'USDC', 'USD Coin')
+  const ARBITRUM_WETH = new Token(42161, '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1', 18, 'WETH', 'Wrapped Ether')
+  const ARBITRUM_RINKEBY_USDC = new Token(421611, '0xf5ba7ca17aF300F52112C4CC8A7AB1A0482e84D5', 6, 'USDC', 'USD Coin')
+  const ARBITRUM_RINKEBY_WETH = new Token(421611, '0x267dc5f342e139b5E407684e3A731aeaE8A71E3e', 18, 'WETH', 'Wrapped Ether')
 
   describe('constructor', () => {
     it('cannot be used for tokens on different chains', () => {
@@ -58,8 +62,14 @@ describe('Pair', () => {
   })
 
   describe('#getAddress', () => {
-    it('returns the correct address', () => {
+    it('returns the correct address for mumbai', () => {
       expect(Pair.getAddress(MUMBAI_WETH, MUMBAI_USDC, 80001)).toEqual('0xe33f1f1B0E167AF70F7Ee1E357c519A387EDd841')
+    })
+    it('returns the correct address for arbitrum', () => {
+      expect(Pair.getAddress(ARBITRUM_WETH, ARBITRUM_USDC, 42161)).toEqual('0x3691Fef3c820E4D401c55471C7be635ff5e5441c')
+    })
+    it('returns the correct address for arbitrum rinkeby', () => {
+      expect(Pair.getAddress(ARBITRUM_RINKEBY_WETH, ARBITRUM_RINKEBY_USDC, 421611)).toEqual('0xC45F6cF7283aeA81b49D0b47f6E69b358c16daD3')
     })
   })
 
