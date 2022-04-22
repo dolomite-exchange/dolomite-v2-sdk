@@ -72,11 +72,11 @@ describe('Pair', () => {
       expect(Pair.getAddress(MUMBAI_WETH, MUMBAI_USDC, 80001)).toEqual('0xe33f1f1B0E167AF70F7Ee1E357c519A387EDd841')
     })
     it('returns the correct address for arbitrum', () => {
-      expect(Pair.getAddress(ARBITRUM_WETH, ARBITRUM_USDC, 42161)).toEqual('0x1f71117Ac1F1E00B700c1C18ECd9b5655A8346c8')
+      expect(Pair.getAddress(ARBITRUM_WETH, ARBITRUM_USDC, 42161)).toEqual('0x93aF6247F2Ac1bb0DF319Ea40Bd77cdf202F8657')
     })
     it('returns the correct address for arbitrum rinkeby', () => {
       expect(Pair.getAddress(ARBITRUM_RINKEBY_WETH, ARBITRUM_RINKEBY_USDC, 421611)).toEqual(
-        '0x3d9761097Af465E7A68abbd5e410861ec1D11082'
+        '0x71Eb0f204FD99Df9c9C111E7C4C2819fc28548b1'
       )
     })
   })
