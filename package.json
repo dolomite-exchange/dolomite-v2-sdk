@@ -1,7 +1,7 @@
 {
   "name": "@dolomite-exchange/v2-sdk",
   "license": "MIT",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "🛠 An SDK for building applications on top of Dolomite V2",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -22,7 +22,7 @@
     "prepublishOnly": "tsdx build"
   },
   "dependencies": {
-    "@dolomite-exchange/sdk-core": "^2.0.0",
+    "@dolomite-exchange/sdk-core": "^2.1.0",
     "@ethersproject/address": "^5.0.0",
     "@ethersproject/solidity": "^5.0.0",
     "tiny-invariant": "^1.1.0",
