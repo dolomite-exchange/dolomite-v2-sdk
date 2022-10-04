@@ -40,13 +40,13 @@ describe('computePairAddress', () => {
 })
 
 describe('Pair', () => {
-  const DAI = 'DAI';
-  const USDC = 'USDC';
-  const WETH = 'WETH';
+  const DAI = 'DAI'
+  const USDC = 'USDC'
+  const WETH = 'WETH'
 
-  const DAIName = 'DAI Stablecoin';
-  const USDCName = 'USDC Coin';
-  const WETHName = 'Wrapped Ether';
+  const DAIName = 'DAI Stablecoin'
+  const USDCName = 'USDC Coin'
+  const WETHName = 'Wrapped Ether'
 
   const MAINNET_USDC = new Token(1, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 18, USDC, USDCName)
   const MAINNET_DAI = new Token(1, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 18, DAI, DAIName)
@@ -76,7 +76,9 @@ describe('Pair', () => {
       expect(Pair.getAddress(MUMBAI_WETH, MUMBAI_USDC, 80001)).toEqual('0xe33f1f1B0E167AF70F7Ee1E357c519A387EDd841')
     })
     it('returns the correct address for arbitrum one', () => {
-      expect(Pair.getAddress(ARBITRUM_ONE_WETH, ARBITRUM_ONE_USDC, 42161)).toEqual('0xb77a493A4950cAd1b049E222d62BCE14fF423c6F')
+      expect(Pair.getAddress(ARBITRUM_ONE_WETH, ARBITRUM_ONE_USDC, 42161)).toEqual(
+        '0xb77a493A4950cAd1b049E222d62BCE14fF423c6F'
+      )
     })
     it('returns the correct address for arbitrum rinkeby', () => {
       expect(Pair.getAddress(ARBITRUM_RINKEBY_WETH, ARBITRUM_RINKEBY_USDC, 421611)).toEqual(
