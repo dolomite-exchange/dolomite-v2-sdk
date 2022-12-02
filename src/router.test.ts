@@ -56,7 +56,7 @@ describe('Router', () => {
   describe('#swapCallParameters', () => {
     describe('exact in', () => {
       it('deadline specified', () => {
-        const result = Router.swapCallParameters(
+        const result = Router.tradeCallParameters(
           Trade.exactIn(
             new Route([pair_weth_0, pair_0_1], weth, token1),
             CurrencyAmount.fromRawAmount(weth, JSBI.BigInt(100))
@@ -73,7 +73,7 @@ describe('Router', () => {
       })
 
       it('token0 to token1', () => {
-        const result = Router.swapCallParameters(
+        const result = Router.tradeCallParameters(
           Trade.exactIn(new Route([pair_0_1], token0, token1), CurrencyAmount.fromRawAmount(token0, JSBI.BigInt(100))),
           {
             ttl: 50,
@@ -87,7 +87,7 @@ describe('Router', () => {
         checkDeadline(result.args[result.args.length - 1])
       })
       it('token0 to token1 with non-default margin options', () => {
-        const result = Router.swapCallParameters(
+        const result = Router.tradeCallParameters(
           Trade.exactIn(new Route([pair_0_1], token0, token1), CurrencyAmount.fromRawAmount(token0, JSBI.BigInt(100))),
           {
             ttl: 50,
@@ -126,7 +126,7 @@ describe('Router', () => {
     })
     describe('exact out', () => {
       it('token0 to token1', () => {
-        const result = Router.swapCallParameters(
+        const result = Router.tradeCallParameters(
           Trade.exactOut(new Route([pair_0_1], token0, token1), CurrencyAmount.fromRawAmount(token1, JSBI.BigInt(100))),
           {
             ttl: 50,
@@ -145,7 +145,7 @@ describe('Router', () => {
           CurrencyAmount.fromRawAmount(token1, JSBI.BigInt(100))
         )
         const slippageTolerance = new Percent('1', '100')
-        const result = Router.swapCallParameters(
+        const result = Router.tradeCallParameters(
           trade,
           {
             ttl: 50,

@@ -34,7 +34,7 @@ export interface MarginOptions {
    */
   otherAccountNumber: JSBI
   /**
-   * The type of values that are being passed through for swapping, excluding the margin deposit.
+   * The type of values that are being passed through for trading, excluding the margin deposit.
    */
   denomination: AssetDenomination
   /**
@@ -93,8 +93,8 @@ export interface TradeOptions {
    */
   allowedSlippage: Percent
   /**
-   * How long the swap is valid until it expires, in seconds.
-   * This will be used to produce a `deadline` parameter which is computed from when the swap call parameters
+   * How long the trade is valid until it expires, in seconds.
+   * This will be used to produce a `deadline` parameter which is computed from when the trade call parameters
    * are generated.
    */
   ttl: number
@@ -109,11 +109,11 @@ export interface TradeOptionsDeadline extends Omit<TradeOptions, 'ttl'> {
 }
 
 /**
- * The parameters to use in the call to the Uniswap V2 Router to execute a trade.
+ * The parameters to use in the call to the DolomiteAmmRouterV1Proxy to execute a trade.
  */
-export interface SwapParameters {
+export interface TradeCallParameters {
   /**
-   * The method to call on the Uniswap V2 Router.
+   * The method to call on the DolomiteAmmRouterV1Proxy.
    */
   methodName: string
   /**
@@ -141,7 +141,7 @@ function toHex(value?: JSBI | CurrencyAmount<Currency> | number): string {
 }
 
 /**
- * Represents the Uniswap V2 Router, and has static methods for helping execute trades.
+ * Represents the DolomiteAmmRouterV1Proxy, and has static methods for helping execute trades.
  */
 export abstract class Router {
   // noinspection JSUnusedLocalSymbols
@@ -156,11 +156,11 @@ export abstract class Router {
    * @param tradeOptions options for the call parameters
    * @param marginOptions options for modifying a potential margin position
    */
-  public static swapCallParameters(
+  public static tradeCallParameters(
     trade: Trade<Currency, Currency, TradeType>,
     tradeOptions: TradeOptions | TradeOptionsDeadline,
     marginOptions: MarginOptions
-  ): SwapParameters {
+  ): TradeCallParameters {
     const tradeAccountNumber = toHex(marginOptions.tradeAccountNumber)
     const otherAccountNumber = toHex(marginOptions.otherAccountNumber)
     const amountIn: AssetAmount = {
