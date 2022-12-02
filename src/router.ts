@@ -1,6 +1,6 @@
 import { Currency, CurrencyAmount, Percent, Token, TradeType } from '@dolomite-exchange/sdk-core'
 // noinspection ES6PreferShortImport
-import { BalanceCheckFlag } from './constants';
+import { BalanceCheckFlag } from './constants'
 import { Trade } from 'entities'
 import JSBI from 'jsbi'
 import invariant from 'tiny-invariant'
@@ -148,8 +148,7 @@ export abstract class Router {
   /**
    * Cannot be constructed.
    */
-  private constructor() {
-  }
+  private constructor() {}
 
   /**
    * Produces the on-chain method name to call and the hex encoded parameters to pass as arguments for a given trade.
@@ -160,7 +159,7 @@ export abstract class Router {
   public static swapCallParameters(
     trade: Trade<Currency, Currency, TradeType>,
     tradeOptions: TradeOptions | TradeOptionsDeadline,
-    marginOptions: MarginOptions,
+    marginOptions: MarginOptions
   ): SwapParameters {
     const tradeAccountNumber = toHex(marginOptions.tradeAccountNumber)
     const otherAccountNumber = toHex(marginOptions.otherAccountNumber)
@@ -168,13 +167,13 @@ export abstract class Router {
       sign: marginOptions.isAmountInPositive,
       denomination: toHex(marginOptions.denomination),
       ref: toHex(AssetReference.Delta),
-      value: toHex(trade.maximumAmountIn(tradeOptions.allowedSlippage)),
+      value: toHex(trade.maximumAmountIn(tradeOptions.allowedSlippage))
     }
     const amountOut: AssetAmount = {
       sign: marginOptions.isAmountOutPositive,
       denomination: toHex(marginOptions.denomination),
       ref: toHex(AssetReference.Delta),
-      value: toHex(trade.minimumAmountOut(tradeOptions.allowedSlippage)),
+      value: toHex(trade.minimumAmountOut(tradeOptions.allowedSlippage))
     }
     const marginTransferWei = toHex(marginOptions.marginTransferWei)
     const expiryTimeDelta = toHex(marginOptions.expiryTimeDelta)
@@ -198,7 +197,9 @@ export abstract class Router {
     }
 
     const ZERO = JSBI.BigInt('0')
-    const depositTokenBigNumber = marginOptions.marginTransferToken ? JSBI.BigInt(marginOptions.marginTransferToken) : undefined
+    const depositTokenBigNumber = marginOptions.marginTransferToken
+      ? JSBI.BigInt(marginOptions.marginTransferToken)
+      : undefined
     const isMargin = depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
     if (isMargin) {
       invariant(typeof marginOptions.isDepositIntoTradeAccount !== 'undefined', 'marginOptions.isPositiveMarginDeposit')
@@ -223,7 +224,7 @@ export abstract class Router {
     return {
       methodName,
       args,
-      value,
+      value
     }
   }
 }
