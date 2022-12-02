@@ -24,3 +24,10 @@ export const ONE = JSBI.BigInt(1)
 export const FIVE = JSBI.BigInt(5)
 export const _997 = JSBI.BigInt(997)
 export const _1000 = JSBI.BigInt(1000)
+
+export enum BalanceCheckFlag {
+  Both = 0,
+  From = 1,
+  To = 2,
+  None = 3,
+}

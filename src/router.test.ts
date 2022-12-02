@@ -1,10 +1,11 @@
 // noinspection ES6PreferShortImport
 
+import { CurrencyAmount, Percent, Token, WRAPPED_CURRENCY } from '@dolomite-exchange/sdk-core'
+import { BalanceCheckFlag } from './constants';
 import JSBI from 'jsbi'
+import invariant from 'tiny-invariant'
 import { Pair, Route, Trade } from './entities'
 import { AssetDenomination, MarginOptions, Router } from './router'
-import invariant from 'tiny-invariant'
-import { CurrencyAmount, Percent, Token, WRAPPED_CURRENCY } from '@dolomite-exchange/sdk-core'
 
 function checkDeadline(deadline: string[] | string | object): void {
   expect(typeof deadline).toBe('string')
@@ -27,25 +28,29 @@ describe('Router', () => {
   const pair_weth_0 = new Pair(CurrencyAmount.fromRawAmount(weth, '1000'), CurrencyAmount.fromRawAmount(token0, '1000'))
 
   const defaultMarginOptions: MarginOptions = {
-    accountNumber: ZERO,
+    tradeAccountNumber: ZERO,
+    otherAccountNumber: ZERO,
     denomination: AssetDenomination.Par,
     isAmountInPositive: true,
     isAmountOutPositive: true,
-    depositToken: undefined,
-    isPositiveMarginDeposit: undefined,
-    marginDeposit: undefined,
-    expiryTimeDelta: 0
+    marginTransferToken: undefined,
+    isDepositIntoTradeAccount: undefined,
+    marginTransferWei: undefined,
+    expiryTimeDelta: 0,
+    balanceCheckFlag: BalanceCheckFlag.Both,
   }
 
   const marginOptions: MarginOptions = {
-    accountNumber: defaultMarginOptions.accountNumber,
+    tradeAccountNumber: defaultMarginOptions.tradeAccountNumber,
+    otherAccountNumber: defaultMarginOptions.otherAccountNumber,
     denomination: AssetDenomination.Wei,
     isAmountInPositive: true,
     isAmountOutPositive: false,
-    depositToken: token0.address,
-    isPositiveMarginDeposit: true,
-    marginDeposit: pair_0_1.reserve0,
-    expiryTimeDelta: 3600
+    marginTransferToken: token0.address,
+    isDepositIntoTradeAccount: true,
+    marginTransferWei: pair_0_1.reserve0,
+    expiryTimeDelta: 3600,
+    balanceCheckFlag: defaultMarginOptions.balanceCheckFlag,
   }
 
   describe('#swapCallParameters', () => {
@@ -58,7 +63,6 @@ describe('Router', () => {
           ),
           {
             deadline: 50,
-            recipient: '0x0000000000000000000000000000000000000004',
             allowedSlippage: new Percent('1', '100')
           },
           defaultMarginOptions
@@ -73,7 +77,6 @@ describe('Router', () => {
           Trade.exactIn(new Route([pair_0_1], token0, token1), CurrencyAmount.fromRawAmount(token0, JSBI.BigInt(100))),
           {
             ttl: 50,
-            recipient: '0x0000000000000000000000000000000000000004',
             allowedSlippage: new Percent('1', '100')
           },
           defaultMarginOptions
@@ -88,7 +91,6 @@ describe('Router', () => {
           Trade.exactIn(new Route([pair_0_1], token0, token1), CurrencyAmount.fromRawAmount(token0, JSBI.BigInt(100))),
           {
             ttl: 50,
-            recipient: '0x0000000000000000000000000000000000000004',
             allowedSlippage: new Percent('1', '100')
           },
           marginOptions
@@ -96,7 +98,8 @@ describe('Router', () => {
         expect(result.methodName).toEqual('swapExactTokensForTokensAndModifyPosition')
         expect(result.args.slice(0, -1)).toEqual([
           {
-            accountNumber: '0x0',
+            tradeAccountNumber: '0x0',
+            otherAccountNumber: '0x0',
             amountIn: {
               sign: true,
               ref: '0x0',
@@ -110,10 +113,11 @@ describe('Router', () => {
               value: '0x59'
             },
             tokenPath: [token0.address, token1.address],
-            marginDeposit: `0x${marginOptions.marginDeposit?.quotient.toString(16)}`,
-            isPositiveMarginDeposit: true,
-            depositToken: marginOptions.depositToken,
-            expiryTimeDelta: '0xe10'
+            marginTransferWei: `0x${marginOptions.marginTransferWei?.quotient.toString(16)}`,
+            isDepositIntoTradeAccount: marginOptions.isDepositIntoTradeAccount,
+            marginTransferToken: marginOptions.marginTransferToken,
+            expiryTimeDelta: '0xe10',
+            balanceCheckFlag: marginOptions.balanceCheckFlag
           }
         ])
         expect(result.value).toEqual('0x0')
@@ -126,7 +130,6 @@ describe('Router', () => {
           Trade.exactOut(new Route([pair_0_1], token0, token1), CurrencyAmount.fromRawAmount(token1, JSBI.BigInt(100))),
           {
             ttl: 50,
-            recipient: '0x0000000000000000000000000000000000000004',
             allowedSlippage: new Percent('1', '100')
           },
           defaultMarginOptions
@@ -146,7 +149,6 @@ describe('Router', () => {
           trade,
           {
             ttl: 50,
-            recipient: '0x0000000000000000000000000000000000000004',
             allowedSlippage: slippageTolerance
           },
           marginOptions
@@ -154,7 +156,8 @@ describe('Router', () => {
         expect(result.methodName).toEqual('swapTokensForExactTokensAndModifyPosition')
         expect(result.args.slice(0, -1)).toEqual([
           {
-            accountNumber: '0x0',
+            tradeAccountNumber: '0x0',
+            otherAccountNumber: '0x0',
             amountIn: {
               denomination: '0x0',
               ref: '0x0',
@@ -168,10 +171,11 @@ describe('Router', () => {
               value: '0x64'
             },
             tokenPath: [token0.address, token1.address],
-            depositToken: marginOptions.depositToken,
-            isPositiveMarginDeposit: true,
-            marginDeposit: `0x${marginOptions.marginDeposit?.quotient.toString(16)}`,
-            expiryTimeDelta: '0xe10'
+            marginTransferToken: marginOptions.marginTransferToken,
+            isDepositIntoTradeAccount: marginOptions.isDepositIntoTradeAccount,
+            marginTransferWei: `0x${marginOptions.marginTransferWei?.quotient.toString(16)}`,
+            expiryTimeDelta: '0xe10',
+            balanceCheckFlag: marginOptions.balanceCheckFlag,
           }
         ])
         expect(result.value).toEqual('0x0')

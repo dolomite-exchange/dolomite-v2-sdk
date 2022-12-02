@@ -1,4 +1,6 @@
-import { Token, Currency, CurrencyAmount, Percent, TradeType } from '@dolomite-exchange/sdk-core'
+import { Currency, CurrencyAmount, Percent, Token, TradeType } from '@dolomite-exchange/sdk-core'
+// noinspection ES6PreferShortImport
+import { BalanceCheckFlag } from './constants';
 import { Trade } from 'entities'
 import JSBI from 'jsbi'
 import invariant from 'tiny-invariant'
@@ -26,9 +28,13 @@ export interface MarginOptions {
   /**
    * The account number from which the trade will take place.
    */
-  accountNumber: JSBI
+  tradeAccountNumber: JSBI
   /**
-   * The type of values that are being passed through for swapping, excluding the margin deposit
+   * The account number for transferring collateral in/out of the position.
+   */
+  otherAccountNumber: JSBI
+  /**
+   * The type of values that are being passed through for swapping, excluding the margin deposit.
    */
   denomination: AssetDenomination
   /**
@@ -44,30 +50,38 @@ export interface MarginOptions {
   /**
    * The deposit token that will be taken from account number 0 or moved back to account 0 after the trade
    */
-  depositToken: string | undefined
+  marginTransferToken: string | undefined
   /**
-   * If positive, the amount to deposited into `accountNumber` or if negative, the amount to be withdrawn.
+   * True to deposit from otherAccountNumber into tradeAccountNumber or false to withdraw from tradeAccountNumber into
+   * otherAccountNumber.
    */
-  isPositiveMarginDeposit: boolean | undefined
+  isDepositIntoTradeAccount: boolean | undefined
   /**
    * The amount to be deposited or withdrawn from/to `accountNumber` depending on `isPositiveMarginDeposit`
    */
-  marginDeposit: CurrencyAmount<Currency> | undefined
+  marginTransferWei: CurrencyAmount<Currency> | undefined
   /**
    * The number of seconds until the position expires. 3600 equals one hour.
    */
   expiryTimeDelta: number
+  /**
+   * Whether to check certain (or all/none) of the balances for negative values once the trade settles. `From` checks
+   * tradeAccountNumber, `To` checks otherAccountNumber.
+   */
+  balanceCheckFlag: BalanceCheckFlag
 }
 
 export interface ModifyPositionParams {
-  accountNumber: string
+  tradeAccountNumber: string // used for executing the trade
+  otherAccountNumber: string // used for transferring collateral in/out of the position
   amountIn: AssetAmount
   amountOut: AssetAmount
   tokenPath: string[]
-  depositToken: string
-  isPositiveMarginDeposit: boolean
-  marginDeposit: string
+  marginTransferToken: string
+  isDepositIntoTradeAccount: boolean
+  marginTransferWei: string
   expiryTimeDelta: string
+  balanceCheckFlag: BalanceCheckFlag
 }
 
 /**
@@ -84,15 +98,6 @@ export interface TradeOptions {
    * are generated.
    */
   ttl: number
-  /**
-   * The account that should receive the output of the swap.
-   */
-  recipient: string
-
-  /**
-   * Whether any of the tokens in the path are fee on transfer tokens, which should be handled with special methods
-   */
-  feeOnTransfer?: boolean
 }
 
 export interface TradeOptionsDeadline extends Omit<TradeOptions, 'ttl'> {
@@ -143,7 +148,8 @@ export abstract class Router {
   /**
    * Cannot be constructed.
    */
-  private constructor() {}
+  private constructor() {
+  }
 
   /**
    * Produces the on-chain method name to call and the hex encoded parameters to pass as arguments for a given trade.
@@ -154,22 +160,23 @@ export abstract class Router {
   public static swapCallParameters(
     trade: Trade<Currency, Currency, TradeType>,
     tradeOptions: TradeOptions | TradeOptionsDeadline,
-    marginOptions: MarginOptions
+    marginOptions: MarginOptions,
   ): SwapParameters {
-    const accountNumber = toHex(marginOptions.accountNumber)
+    const tradeAccountNumber = toHex(marginOptions.tradeAccountNumber)
+    const otherAccountNumber = toHex(marginOptions.otherAccountNumber)
     const amountIn: AssetAmount = {
       sign: marginOptions.isAmountInPositive,
       denomination: toHex(marginOptions.denomination),
       ref: toHex(AssetReference.Delta),
-      value: toHex(trade.maximumAmountIn(tradeOptions.allowedSlippage))
+      value: toHex(trade.maximumAmountIn(tradeOptions.allowedSlippage)),
     }
     const amountOut: AssetAmount = {
       sign: marginOptions.isAmountOutPositive,
       denomination: toHex(marginOptions.denomination),
       ref: toHex(AssetReference.Delta),
-      value: toHex(trade.minimumAmountOut(tradeOptions.allowedSlippage))
+      value: toHex(trade.minimumAmountOut(tradeOptions.allowedSlippage)),
     }
-    const depositAmount = toHex(marginOptions.marginDeposit)
+    const marginTransferWei = toHex(marginOptions.marginTransferWei)
     const expiryTimeDelta = toHex(marginOptions.expiryTimeDelta)
     const path: string[] = trade.route.path.map((token: Token) => token.address)
     const deadline =
@@ -178,22 +185,24 @@ export abstract class Router {
         : toHex(tradeOptions.deadline)
 
     const params: ModifyPositionParams = {
-      accountNumber: accountNumber,
+      tradeAccountNumber: tradeAccountNumber,
+      otherAccountNumber: otherAccountNumber,
       amountIn: amountIn,
       amountOut: amountOut,
       tokenPath: path,
-      depositToken: marginOptions.depositToken ?? '0x0000000000000000000000000000000000000000',
-      isPositiveMarginDeposit: marginOptions.isPositiveMarginDeposit ?? false,
-      marginDeposit: depositAmount,
-      expiryTimeDelta: expiryTimeDelta
+      marginTransferToken: marginOptions.marginTransferToken ?? '0x0000000000000000000000000000000000000000',
+      isDepositIntoTradeAccount: marginOptions.isDepositIntoTradeAccount ?? false,
+      marginTransferWei: marginTransferWei,
+      expiryTimeDelta: expiryTimeDelta,
+      balanceCheckFlag: marginOptions.balanceCheckFlag
     }
 
     const ZERO = JSBI.BigInt('0')
-    const depositTokenBigNumber = marginOptions.depositToken ? JSBI.BigInt(marginOptions.depositToken) : undefined
+    const depositTokenBigNumber = marginOptions.marginTransferToken ? JSBI.BigInt(marginOptions.marginTransferToken) : undefined
     const isMargin = depositTokenBigNumber && JSBI.notEqual(depositTokenBigNumber, ZERO)
     if (isMargin) {
-      invariant(typeof marginOptions.isPositiveMarginDeposit !== 'undefined', 'marginOptions.isPositiveMarginDeposit')
-      invariant(typeof marginOptions.marginDeposit !== 'undefined', 'marginOptions.marginDeposit')
+      invariant(typeof marginOptions.isDepositIntoTradeAccount !== 'undefined', 'marginOptions.isPositiveMarginDeposit')
+      invariant(typeof marginOptions.marginTransferWei !== 'undefined', 'marginOptions.marginDeposit')
     }
 
     let methodName: string
@@ -202,19 +211,19 @@ export abstract class Router {
     switch (trade.tradeType) {
       case TradeType.EXACT_INPUT:
         methodName = isMargin ? 'swapExactTokensForTokensAndModifyPosition' : 'swapExactTokensForTokens'
-        args = isMargin ? [params, deadline] : [accountNumber, amountIn.value, amountOut.value, path, deadline]
+        args = isMargin ? [params, deadline] : [tradeAccountNumber, amountIn.value, amountOut.value, path, deadline]
         value = ZERO_HEX
         break
       case TradeType.EXACT_OUTPUT:
         methodName = isMargin ? 'swapTokensForExactTokensAndModifyPosition' : 'swapTokensForExactTokens'
-        args = isMargin ? [params, deadline] : [accountNumber, amountIn.value, amountOut.value, path, deadline]
+        args = isMargin ? [params, deadline] : [tradeAccountNumber, amountIn.value, amountOut.value, path, deadline]
         value = ZERO_HEX
         break
     }
     return {
       methodName,
       args,
-      value
+      value,
     }
   }
 }
