@@ -1,7 +1,7 @@
 // noinspection ES6PreferShortImport
 
 import { CurrencyAmount, Percent, Token, WRAPPED_CURRENCY } from '@dolomite-exchange/sdk-core'
-import { BalanceCheckFlag } from './constants';
+import { BalanceCheckFlag } from './constants'
 import JSBI from 'jsbi'
 import invariant from 'tiny-invariant'
 import { Pair, Route, Trade } from './entities'
@@ -37,7 +37,7 @@ describe('Router', () => {
     isDepositIntoTradeAccount: undefined,
     marginTransferWei: undefined,
     expiryTimeDelta: 0,
-    balanceCheckFlag: BalanceCheckFlag.Both,
+    balanceCheckFlag: BalanceCheckFlag.Both
   }
 
   const marginOptions: MarginOptions = {
@@ -50,7 +50,7 @@ describe('Router', () => {
     isDepositIntoTradeAccount: true,
     marginTransferWei: pair_0_1.reserve0,
     expiryTimeDelta: 3600,
-    balanceCheckFlag: defaultMarginOptions.balanceCheckFlag,
+    balanceCheckFlag: defaultMarginOptions.balanceCheckFlag
   }
 
   describe('#swapCallParameters', () => {
@@ -175,7 +175,7 @@ describe('Router', () => {
             isDepositIntoTradeAccount: marginOptions.isDepositIntoTradeAccount,
             marginTransferWei: `0x${marginOptions.marginTransferWei?.quotient.toString(16)}`,
             expiryTimeDelta: '0xe10',
-            balanceCheckFlag: marginOptions.balanceCheckFlag,
+            balanceCheckFlag: marginOptions.balanceCheckFlag
           }
         ])
         expect(result.value).toEqual('0x0')
