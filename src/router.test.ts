@@ -1,9 +1,9 @@
 // noinspection ES6PreferShortImport
 
 import { CurrencyAmount, Percent, Token, WRAPPED_CURRENCY } from '@dolomite-exchange/sdk-core'
-import { BalanceCheckFlag } from './constants'
 import JSBI from 'jsbi'
 import invariant from 'tiny-invariant'
+import { BalanceCheckFlag } from './constants'
 import { Pair, Route, Trade } from './entities'
 import { AssetDenomination, MarginOptions, Router } from './router'
 
@@ -22,7 +22,7 @@ describe('Router', () => {
 
   const pair_0_1 = new Pair(
     CurrencyAmount.fromRawAmount(token0, JSBI.BigInt(1000)),
-    CurrencyAmount.fromRawAmount(token1, JSBI.BigInt(1000))
+    CurrencyAmount.fromRawAmount(token1, JSBI.BigInt(1000)),
   )
 
   const pair_weth_0 = new Pair(CurrencyAmount.fromRawAmount(weth, '1000'), CurrencyAmount.fromRawAmount(token0, '1000'))
@@ -37,7 +37,6 @@ describe('Router', () => {
     isDepositIntoTradeAccount: undefined,
     marginTransferWei: undefined,
     expiryTimeDelta: 0,
-    balanceCheckFlag: BalanceCheckFlag.Both
   }
 
   const marginOptions: MarginOptions = {
@@ -50,7 +49,6 @@ describe('Router', () => {
     isDepositIntoTradeAccount: true,
     marginTransferWei: pair_0_1.reserve0,
     expiryTimeDelta: 3600,
-    balanceCheckFlag: defaultMarginOptions.balanceCheckFlag
   }
 
   describe('#swapCallParameters', () => {
@@ -59,16 +57,18 @@ describe('Router', () => {
         const result = Router.tradeCallParameters(
           Trade.exactIn(
             new Route([pair_weth_0, pair_0_1], weth, token1),
-            CurrencyAmount.fromRawAmount(weth, JSBI.BigInt(100))
+            CurrencyAmount.fromRawAmount(weth, JSBI.BigInt(100)),
           ),
           {
             deadline: 50,
-            allowedSlippage: new Percent('1', '100')
+            allowedSlippage: new Percent('1', '100'),
+            balanceCheckFlag: BalanceCheckFlag.Both,
           },
-          defaultMarginOptions
+          defaultMarginOptions,
         )
         expect(result.methodName).toEqual('swapExactTokensForTokens')
-        expect(result.args).toEqual(['0x0', '0x64', '0x51', [weth.address, token0.address, token1.address], '0x32'])
+        expect(result.args)
+          .toEqual(['0x0', '0x64', '0x51', [weth.address, token0.address, token1.address], '0x32', '0x0'])
         expect(result.value).toEqual('0x0')
       })
 
@@ -77,23 +77,27 @@ describe('Router', () => {
           Trade.exactIn(new Route([pair_0_1], token0, token1), CurrencyAmount.fromRawAmount(token0, JSBI.BigInt(100))),
           {
             ttl: 50,
-            allowedSlippage: new Percent('1', '100')
+            allowedSlippage: new Percent('1', '100'),
+            balanceCheckFlag: BalanceCheckFlag.FromAccount,
           },
-          defaultMarginOptions
+          defaultMarginOptions,
         )
         expect(result.methodName).toEqual('swapExactTokensForTokens')
-        expect(result.args.slice(0, -1)).toEqual(['0x0', '0x64', '0x59', [token0.address, token1.address]])
+        expect(result.args.slice(0, -2).concat(result.args.slice(-1)))
+          .toEqual(['0x0', '0x64', '0x59', [token0.address, token1.address], '0x1'])
         expect(result.value).toEqual('0x0')
-        checkDeadline(result.args[result.args.length - 1])
+        checkDeadline(result.args[result.args.length - 2])
       })
       it('token0 to token1 with non-default margin options', () => {
+        const balanceCheckFlag = BalanceCheckFlag.TradeAccount
         const result = Router.tradeCallParameters(
           Trade.exactIn(new Route([pair_0_1], token0, token1), CurrencyAmount.fromRawAmount(token0, JSBI.BigInt(100))),
           {
             ttl: 50,
-            allowedSlippage: new Percent('1', '100')
+            allowedSlippage: new Percent('1', '100'),
+            balanceCheckFlag: balanceCheckFlag,
           },
-          marginOptions
+          marginOptions,
         )
         expect(result.methodName).toEqual('swapExactTokensForTokensAndModifyPosition')
         expect(result.args.slice(0, -1)).toEqual([
@@ -104,21 +108,21 @@ describe('Router', () => {
               sign: true,
               ref: '0x0',
               denomination: '0x0',
-              value: '0x64'
+              value: '0x64',
             },
             amountOut: {
               sign: false,
               ref: '0x0',
               denomination: '0x0',
-              value: '0x59'
+              value: '0x59',
             },
             tokenPath: [token0.address, token1.address],
             marginTransferWei: `0x${marginOptions.marginTransferWei?.quotient.toString(16)}`,
             isDepositIntoTradeAccount: marginOptions.isDepositIntoTradeAccount,
             marginTransferToken: marginOptions.marginTransferToken,
             expiryTimeDelta: '0xe10',
-            balanceCheckFlag: marginOptions.balanceCheckFlag
-          }
+            balanceCheckFlag: `0x${balanceCheckFlag.toString(16)}`,
+          },
         ])
         expect(result.value).toEqual('0x0')
         checkDeadline(result.args[result.args.length - 1])
@@ -130,28 +134,32 @@ describe('Router', () => {
           Trade.exactOut(new Route([pair_0_1], token0, token1), CurrencyAmount.fromRawAmount(token1, JSBI.BigInt(100))),
           {
             ttl: 50,
-            allowedSlippage: new Percent('1', '100')
+            allowedSlippage: new Percent('1', '100'),
+            balanceCheckFlag: BalanceCheckFlag.ToAccount,
           },
-          defaultMarginOptions
+          defaultMarginOptions,
         )
         expect(result.methodName).toEqual('swapTokensForExactTokens')
-        expect(result.args.slice(0, -1)).toEqual(['0x0', '0x71', '0x64', [token0.address, token1.address]])
+        expect(result.args.slice(0, -2).concat(result.args.slice(-1)))
+          .toEqual(['0x0', '0x71', '0x64', [token0.address, token1.address], '0x2'])
         expect(result.value).toEqual('0x0')
-        checkDeadline(result.args[result.args.length - 1])
+        checkDeadline(result.args[result.args.length - 2])
       })
       it('token0 to token1 with non-default margin options', () => {
         const trade = Trade.exactOut(
           new Route([pair_0_1], token0, token1),
-          CurrencyAmount.fromRawAmount(token1, JSBI.BigInt(100))
+          CurrencyAmount.fromRawAmount(token1, JSBI.BigInt(100)),
         )
         const slippageTolerance = new Percent('1', '100')
+        const balanceCheckFlag = BalanceCheckFlag.OtherAccount
         const result = Router.tradeCallParameters(
           trade,
           {
             ttl: 50,
-            allowedSlippage: slippageTolerance
+            allowedSlippage: slippageTolerance,
+            balanceCheckFlag: balanceCheckFlag,
           },
-          marginOptions
+          marginOptions,
         )
         expect(result.methodName).toEqual('swapTokensForExactTokensAndModifyPosition')
         expect(result.args.slice(0, -1)).toEqual([
@@ -162,21 +170,21 @@ describe('Router', () => {
               denomination: '0x0',
               ref: '0x0',
               sign: true,
-              value: '0x71'
+              value: '0x71',
             },
             amountOut: {
               denomination: '0x0',
               ref: '0x0',
               sign: false,
-              value: '0x64'
+              value: '0x64',
             },
             tokenPath: [token0.address, token1.address],
             marginTransferToken: marginOptions.marginTransferToken,
             isDepositIntoTradeAccount: marginOptions.isDepositIntoTradeAccount,
             marginTransferWei: `0x${marginOptions.marginTransferWei?.quotient.toString(16)}`,
             expiryTimeDelta: '0xe10',
-            balanceCheckFlag: marginOptions.balanceCheckFlag
-          }
+            balanceCheckFlag: `0x${balanceCheckFlag.toString(16)}`,
+          },
         ])
         expect(result.value).toEqual('0x0')
         checkDeadline(result.args[result.args.length - 1])
