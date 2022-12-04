@@ -7,7 +7,7 @@ import { BalanceCheckFlag } from './constants'
 import { Pair, Route, Trade } from './entities'
 import { AssetDenomination, MarginOptions, Router } from './router'
 
-function checkDeadline(deadline: string[] | string | object): void {
+function checkDeadline(deadline: string[] | string | number | object): void {
   expect(typeof deadline).toBe('string')
   invariant(typeof deadline === 'string')
   // less than 5 seconds on the deadline
@@ -68,7 +68,7 @@ describe('Router', () => {
         )
         expect(result.methodName).toEqual('swapExactTokensForTokens')
         expect(result.args)
-          .toEqual(['0x0', '0x64', '0x51', [weth.address, token0.address, token1.address], '0x32', '0x0'])
+          .toEqual(['0x0', '0x64', '0x51', [weth.address, token0.address, token1.address], '0x32', 0])
         expect(result.value).toEqual('0x0')
       })
 
@@ -84,7 +84,7 @@ describe('Router', () => {
         )
         expect(result.methodName).toEqual('swapExactTokensForTokens')
         expect(result.args.slice(0, -2).concat(result.args.slice(-1)))
-          .toEqual(['0x0', '0x64', '0x59', [token0.address, token1.address], '0x1'])
+          .toEqual(['0x0', '0x64', '0x59', [token0.address, token1.address], 1])
         expect(result.value).toEqual('0x0')
         checkDeadline(result.args[result.args.length - 2])
       })
@@ -121,7 +121,7 @@ describe('Router', () => {
             isDepositIntoTradeAccount: marginOptions.isDepositIntoTradeAccount,
             marginTransferToken: marginOptions.marginTransferToken,
             expiryTimeDelta: '0xe10',
-            balanceCheckFlag: `0x${balanceCheckFlag.toString(16)}`,
+            balanceCheckFlag: balanceCheckFlag,
           },
         ])
         expect(result.value).toEqual('0x0')
@@ -141,7 +141,7 @@ describe('Router', () => {
         )
         expect(result.methodName).toEqual('swapTokensForExactTokens')
         expect(result.args.slice(0, -2).concat(result.args.slice(-1)))
-          .toEqual(['0x0', '0x71', '0x64', [token0.address, token1.address], '0x2'])
+          .toEqual(['0x0', '0x71', '0x64', [token0.address, token1.address], 2])
         expect(result.value).toEqual('0x0')
         checkDeadline(result.args[result.args.length - 2])
       })
@@ -183,7 +183,7 @@ describe('Router', () => {
             isDepositIntoTradeAccount: marginOptions.isDepositIntoTradeAccount,
             marginTransferWei: `0x${marginOptions.marginTransferWei?.quotient.toString(16)}`,
             expiryTimeDelta: '0xe10',
-            balanceCheckFlag: `0x${balanceCheckFlag.toString(16)}`,
+            balanceCheckFlag: balanceCheckFlag,
           },
         ])
         expect(result.value).toEqual('0x0')

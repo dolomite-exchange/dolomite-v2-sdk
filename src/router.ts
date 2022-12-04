@@ -76,7 +76,7 @@ export interface ModifyPositionParams {
   isDepositIntoTradeAccount: boolean
   marginTransferWei: string
   expiryTimeDelta: string
-  balanceCheckFlag: string
+  balanceCheckFlag: number
 }
 
 /**
@@ -120,7 +120,7 @@ export interface ContractCallParameters {
   /**
    * The arguments to pass to the method, all hex encoded.
    */
-  args: (string | string[] | object)[]
+  args: (number | string | string[] | object)[]
   /**
    * The amount of wei to send in hex.
    */
@@ -195,7 +195,7 @@ export abstract class Router {
       isDepositIntoTradeAccount: marginOptions.isDepositIntoTradeAccount ?? false,
       marginTransferWei: marginTransferWei,
       expiryTimeDelta: expiryTimeDelta,
-      balanceCheckFlag: toHex(tradeOptions.balanceCheckFlag),
+      balanceCheckFlag: tradeOptions.balanceCheckFlag,
     }
 
     const ZERO = JSBI.BigInt('0')
@@ -209,7 +209,7 @@ export abstract class Router {
     }
 
     let methodName: string
-    let args: (string | string[] | object)[]
+    let args: (number | string | string[] | object)[]
     let value: string
     switch (trade.tradeType) {
       case TradeType.EXACT_INPUT:
@@ -221,7 +221,7 @@ export abstract class Router {
             amountOut.value,
             path,
             deadline,
-            toHex(tradeOptions.balanceCheckFlag),
+            tradeOptions.balanceCheckFlag,
           ]
         value = ZERO_HEX
         break
@@ -234,7 +234,7 @@ export abstract class Router {
             amountOut.value,
             path,
             deadline,
-            toHex(tradeOptions.balanceCheckFlag),
+            tradeOptions.balanceCheckFlag,
           ]
         value = ZERO_HEX
         break
