@@ -27,7 +27,9 @@ export const _1000 = JSBI.BigInt(1000)
 
 export enum BalanceCheckFlag {
   Both = 0,
-  From = 1,
-  To = 2,
+  FromAccount = 1,
+  TradeAccount = 1,
+  ToAccount = 2,
+  OtherAccount = 2,
   None = 3
 }
