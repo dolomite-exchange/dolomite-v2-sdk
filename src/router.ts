@@ -111,7 +111,7 @@ export interface TradeOptionsDeadline extends Omit<TradeOptions, 'ttl'> {
 /**
  * The parameters to use in the call to the DolomiteAmmRouterV1Proxy to execute a trade.
  */
-export interface TradeCallParameters {
+export interface ContractCallParameters {
   /**
    * The method to call on the DolomiteAmmRouterV1Proxy.
    */
@@ -160,7 +160,7 @@ export abstract class Router {
     trade: Trade<Currency, Currency, TradeType>,
     tradeOptions: TradeOptions | TradeOptionsDeadline,
     marginOptions: MarginOptions
-  ): TradeCallParameters {
+  ): ContractCallParameters {
     const tradeAccountNumber = toHex(marginOptions.tradeAccountNumber)
     const otherAccountNumber = toHex(marginOptions.otherAccountNumber)
     const amountIn: AssetAmount = {
