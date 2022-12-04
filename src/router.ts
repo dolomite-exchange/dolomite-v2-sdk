@@ -149,8 +149,7 @@ export abstract class Router {
   /**
    * Cannot be constructed.
    */
-  private constructor() {
-  }
+  private constructor() {}
 
   /**
    * Produces the on-chain method name to call and the hex encoded parameters to pass as arguments for a given trade.
@@ -161,7 +160,7 @@ export abstract class Router {
   public static tradeCallParameters(
     trade: Trade<Currency, Currency, TradeType>,
     tradeOptions: TradeOptions | TradeOptionsDeadline,
-    marginOptions: MarginOptions,
+    marginOptions: MarginOptions
   ): ContractCallParameters {
     const tradeAccountNumber = toHex(marginOptions.tradeAccountNumber)
     const otherAccountNumber = toHex(marginOptions.otherAccountNumber)
@@ -169,13 +168,13 @@ export abstract class Router {
       sign: marginOptions.isAmountInPositive,
       denomination: toHex(marginOptions.denomination),
       ref: toHex(AssetReference.Delta),
-      value: toHex(trade.maximumAmountIn(tradeOptions.allowedSlippage)),
+      value: toHex(trade.maximumAmountIn(tradeOptions.allowedSlippage))
     }
     const amountOut: AssetAmount = {
       sign: marginOptions.isAmountOutPositive,
       denomination: toHex(marginOptions.denomination),
       ref: toHex(AssetReference.Delta),
-      value: toHex(trade.minimumAmountOut(tradeOptions.allowedSlippage)),
+      value: toHex(trade.minimumAmountOut(tradeOptions.allowedSlippage))
     }
     const marginTransferWei = toHex(marginOptions.marginTransferWei)
     const expiryTimeDelta = toHex(marginOptions.expiryTimeDelta)
@@ -195,7 +194,7 @@ export abstract class Router {
       isDepositIntoTradeAccount: marginOptions.isDepositIntoTradeAccount ?? false,
       marginTransferWei: marginTransferWei,
       expiryTimeDelta: expiryTimeDelta,
-      balanceCheckFlag: toHex(tradeOptions.balanceCheckFlag),
+      balanceCheckFlag: toHex(tradeOptions.balanceCheckFlag)
     }
 
     const ZERO = JSBI.BigInt('0')
@@ -214,35 +213,23 @@ export abstract class Router {
     switch (trade.tradeType) {
       case TradeType.EXACT_INPUT:
         methodName = isMargin ? 'swapExactTokensForTokensAndModifyPosition' : 'swapExactTokensForTokens'
-        args =
-          isMargin ? [params, deadline] : [
-            tradeAccountNumber,
-            amountIn.value,
-            amountOut.value,
-            path,
-            deadline,
-            toHex(tradeOptions.balanceCheckFlag),
-          ]
+        args = isMargin
+          ? [params, deadline]
+          : [tradeAccountNumber, amountIn.value, amountOut.value, path, deadline, toHex(tradeOptions.balanceCheckFlag)]
         value = ZERO_HEX
         break
       case TradeType.EXACT_OUTPUT:
         methodName = isMargin ? 'swapTokensForExactTokensAndModifyPosition' : 'swapTokensForExactTokens'
-        args =
-          isMargin ? [params, deadline] : [
-            tradeAccountNumber,
-            amountIn.value,
-            amountOut.value,
-            path,
-            deadline,
-            toHex(tradeOptions.balanceCheckFlag),
-          ]
+        args = isMargin
+          ? [params, deadline]
+          : [tradeAccountNumber, amountIn.value, amountOut.value, path, deadline, toHex(tradeOptions.balanceCheckFlag)]
         value = ZERO_HEX
         break
     }
     return {
       methodName,
       args,
-      value,
+      value
     }
   }
 }
