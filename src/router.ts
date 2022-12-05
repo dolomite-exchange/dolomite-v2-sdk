@@ -213,28 +213,16 @@ export abstract class Router {
     switch (trade.tradeType) {
       case TradeType.EXACT_INPUT:
         methodName = isMargin ? 'swapExactTokensForTokensAndModifyPosition' : 'swapExactTokensForTokens'
-        args =
-          isMargin ? [params, deadline] : [
-            tradeAccountNumber,
-            amountIn.value,
-            amountOut.value,
-            path,
-            deadline,
-            tradeOptions.balanceCheckFlag
-          ]
+        args = isMargin
+          ? [params, deadline]
+          : [tradeAccountNumber, amountIn.value, amountOut.value, path, deadline, tradeOptions.balanceCheckFlag]
         value = ZERO_HEX
         break
       case TradeType.EXACT_OUTPUT:
         methodName = isMargin ? 'swapTokensForExactTokensAndModifyPosition' : 'swapTokensForExactTokens'
-        args =
-          isMargin ? [params, deadline] : [
-            tradeAccountNumber,
-            amountIn.value,
-            amountOut.value,
-            path,
-            deadline,
-            tradeOptions.balanceCheckFlag
-          ]
+        args = isMargin
+          ? [params, deadline]
+          : [tradeAccountNumber, amountIn.value, amountOut.value, path, deadline, tradeOptions.balanceCheckFlag]
         value = ZERO_HEX
         break
     }

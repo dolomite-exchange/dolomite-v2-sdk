@@ -67,14 +67,7 @@ describe('Router', () => {
           defaultMarginOptions
         )
         expect(result.methodName).toEqual('swapExactTokensForTokens')
-        expect(result.args).toEqual([
-          '0x0',
-          '0x64',
-          '0x51',
-          [weth.address, token0.address, token1.address],
-          '0x32',
-          0
-        ])
+        expect(result.args).toEqual(['0x0', '0x64', '0x51', [weth.address, token0.address, token1.address], '0x32', 0])
         expect(result.value).toEqual('0x0')
       })
 
@@ -133,7 +126,7 @@ describe('Router', () => {
             marginTransferToken: marginOptions.marginTransferToken,
             expiryTimeDelta: '0xe10',
             balanceCheckFlag: balanceCheckFlag
-          },
+          }
         ])
         expect(result.value).toEqual('0x0')
         checkDeadline(result.args[result.args.length - 1])
@@ -200,7 +193,7 @@ describe('Router', () => {
             marginTransferWei: `0x${marginOptions.marginTransferWei?.quotient.toString(16)}`,
             expiryTimeDelta: '0xe10',
             balanceCheckFlag: balanceCheckFlag
-          },
+          }
         ])
         expect(result.value).toEqual('0x0')
         checkDeadline(result.args[result.args.length - 1])
