@@ -1131,10 +1131,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@dolomite-exchange/sdk-core@2.1.11":
-  version "2.1.11"
-  resolved "https://registry.yarnpkg.com/@dolomite-exchange/sdk-core/-/sdk-core-2.1.11.tgz#2cc70ea64da4908a8da4d19a21e9b0a38564e449"
-  integrity sha512-8NXm1zCOttxR73/TKh2B4FEHqfqb4zRmdEnwGF6BAwXsJzTpLeTu037el7chahlQPvrk+ocb/x3ueAgOY+8xDg==
+"@dolomite-exchange/sdk-core@2.1.12":
+  version "2.1.12"
+  resolved "https://registry.yarnpkg.com/@dolomite-exchange/sdk-core/-/sdk-core-2.1.12.tgz#54b5abc7b9190ea29ad0ecceffc62b3382c75b12"
+  integrity sha512-jha+fC9CGkevNpKrJms1hIi36+owf71XNxqoNPtPkuH5Uq/5xAltznUbVJ8pqRlMaQWIflSHHJqrptfro8LxAA==
   dependencies:
     "@ethersproject/address" "^5.0.2"
     "@uniswap/token-lists" "^1.0.0-beta.24"
