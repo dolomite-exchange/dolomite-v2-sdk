@@ -4,14 +4,14 @@ export const FACTORY_ADDRESSES: Record<number, string | undefined> = {
   1: undefined,
   1101: undefined,
   8453: undefined,
-  421611: '0xf3f88a800779cC0B0858019D2e09757b49abfFe6',
+  421611: '0xf3f88a800779cC0B0858019D2e09757b49abfFe6'
 }
 
 export const INIT_CODE_HASHES: Record<number, string | undefined> = {
   1: undefined,
   1101: undefined,
   8453: undefined,
-  42161: '0x3a71df2e5dedc0551796096fa5135dd704506f5cdcd786351b313d77f498666e',
+  42161: '0x3a71df2e5dedc0551796096fa5135dd704506f5cdcd786351b313d77f498666e'
 }
 
 export const MINIMUM_LIQUIDITY = JSBI.BigInt(1000)
