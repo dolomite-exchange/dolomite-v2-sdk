@@ -22,7 +22,7 @@
     "prepublishOnly": "tsdx build"
   },
   "dependencies": {
-    "@dolomite-exchange/sdk-core": "2.1.13",
+    "@dolomite-exchange/sdk-core": "2.2.0",
     "@ethersproject/address": "^5.0.0",
     "@ethersproject/solidity": "^5.0.0",
     "tiny-invariant": "^1.1.0",
