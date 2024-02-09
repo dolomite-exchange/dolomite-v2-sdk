@@ -16,9 +16,9 @@ function checkDeadline(deadline: string[] | string | number | object): void {
 
 describe('Router', () => {
   const ZERO = JSBI.BigInt('0')
-  const weth = WRAPPED_CURRENCY[1]
-  const token0 = new Token(1, '0x0000000000000000000000000000000000000001', 18, 't0')
-  const token1 = new Token(1, '0x0000000000000000000000000000000000000002', 18, 't1')
+  const weth = WRAPPED_CURRENCY[42161]
+  const token0 = new Token(42161, '0x0000000000000000000000000000000000000001', 18, 't0')
+  const token1 = new Token(42161, '0x0000000000000000000000000000000000000002', 18, 't1')
 
   const pair_0_1 = new Pair(
     CurrencyAmount.fromRawAmount(token0, JSBI.BigInt(1000)),

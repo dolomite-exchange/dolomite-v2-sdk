@@ -1,58 +1,58 @@
 // noinspection ES6PreferShortImport
 
-import { BigintIsh, Price, sqrt, Token, CurrencyAmount } from '@dolomite-exchange/sdk-core'
-import invariant from 'tiny-invariant'
-import JSBI from 'jsbi'
-import { pack, keccak256 } from '@ethersproject/solidity'
+import { BigintIsh, CurrencyAmount, Price, sqrt, Token } from '@dolomite-exchange/sdk-core'
 import { getCreate2Address } from '@ethersproject/address'
+import { keccak256, pack } from '@ethersproject/solidity'
+import JSBI from 'jsbi'
+import invariant from 'tiny-invariant'
 
-import { FACTORY_ADDRESSES, MINIMUM_LIQUIDITY, FIVE, _997, _1000, ONE, ZERO, INIT_CODE_HASHES } from '../constants'
-import { InsufficientReservesError, InsufficientInputAmountError } from '../errors'
+import { _1000, _997, FACTORY_ADDRESSES, FIVE, INIT_CODE_HASHES, MINIMUM_LIQUIDITY, ONE, ZERO } from '../constants'
+import { InsufficientInputAmountError, InsufficientReservesError } from '../errors'
 
 export const computePairAddress = ({
   chainId,
   tokenA,
-  tokenB
+  tokenB,
 }: {
   chainId: number
   tokenA: Token
   tokenB: Token
-}): string => {
+}): string | undefined => {
+  const factory = FACTORY_ADDRESSES[chainId]
+  const initCodeHash = INIT_CODE_HASHES[chainId]
+  if (!factory || !initCodeHash) {
+    return undefined
+  }
+
   const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA] // does safety checks
   return getCreate2Address(
-    FACTORY_ADDRESSES[chainId],
+    factory,
     keccak256(['bytes'], [pack(['address', 'address'], [token0.address, token1.address])]),
-    INIT_CODE_HASHES[chainId]
+    initCodeHash,
   )
 }
+
 export class Pair {
   public readonly liquidityToken: Token
   private readonly tokenAmounts: [CurrencyAmount<Token>, CurrencyAmount<Token>]
-
-  public static getAddress(tokenA: Token, tokenB: Token, chainId?: number): string {
-    return computePairAddress({ chainId: chainId ?? 1, tokenA, tokenB })
-  }
 
   public constructor(currencyAmountA: CurrencyAmount<Token>, tokenAmountB: CurrencyAmount<Token>, chainId?: number) {
     const tokenAmounts = currencyAmountA.currency.sortsBefore(tokenAmountB.currency) // does safety checks
       ? [currencyAmountA, tokenAmountB]
       : [tokenAmountB, currencyAmountA]
+    const pairAddress = Pair.getAddress(tokenAmounts[0].currency, tokenAmounts[1].currency, chainId)
+    if (!pairAddress) {
+      throw new Error('Pair address is undefined')
+    }
+
     this.liquidityToken = new Token(
       tokenAmounts[0].currency.chainId,
-      Pair.getAddress(tokenAmounts[0].currency, tokenAmounts[1].currency, chainId),
+      pairAddress,
       18,
       'DLP',
-      'Dolomite LP Token'
+      'Dolomite LP Token',
     )
     this.tokenAmounts = tokenAmounts as [CurrencyAmount<Token>, CurrencyAmount<Token>]
-  }
-
-  /**
-   * Returns true if the token is either token0 or token1
-   * @param token to check
-   */
-  public involvesToken(token: Token): boolean {
-    return token.equals(this.token0) || token.equals(this.token1)
   }
 
   /**
@@ -69,15 +69,6 @@ export class Pair {
   public get token1Price(): Price<Token, Token> {
     const result = this.tokenAmounts[0].divide(this.tokenAmounts[1])
     return new Price(this.token1, this.token0, result.denominator, result.numerator)
-  }
-
-  /**
-   * Return the price of the given token in terms of the other token in the pair.
-   * @param token token to return price of
-   */
-  public priceOf(token: Token): Price<Token, Token> {
-    invariant(this.involvesToken(token), 'TOKEN')
-    return token.equals(this.token0) ? this.token0Price : this.token1Price
   }
 
   /**
@@ -103,6 +94,27 @@ export class Pair {
     return this.tokenAmounts[1]
   }
 
+  public static getAddress(tokenA: Token, tokenB: Token, chainId?: number): string | undefined {
+    return computePairAddress({ chainId: chainId ?? 42161, tokenA, tokenB })
+  }
+
+  /**
+   * Returns true if the token is either token0 or token1
+   * @param token to check
+   */
+  public involvesToken(token: Token): boolean {
+    return token.equals(this.token0) || token.equals(this.token1)
+  }
+
+  /**
+   * Return the price of the given token in terms of the other token in the pair.
+   * @param token token to return price of
+   */
+  public priceOf(token: Token): Price<Token, Token> {
+    invariant(this.involvesToken(token), 'TOKEN')
+    return token.equals(this.token0) ? this.token0Price : this.token1Price
+  }
+
   public reserveOf(token: Token): CurrencyAmount<Token> {
     invariant(this.involvesToken(token), 'TOKEN')
     return token.equals(this.token0) ? this.reserve0 : this.reserve1
@@ -120,7 +132,7 @@ export class Pair {
     const denominator = JSBI.add(JSBI.multiply(inputReserve.quotient, _1000), inputAmountWithFee)
     const outputAmount = CurrencyAmount.fromRawAmount(
       inputAmount.currency.equals(this.token0) ? this.token1 : this.token0,
-      JSBI.divide(numerator, denominator)
+      JSBI.divide(numerator, denominator),
     )
     if (JSBI.equal(outputAmount.quotient, ZERO)) {
       throw new InsufficientInputAmountError()
@@ -144,7 +156,7 @@ export class Pair {
     const denominator = JSBI.multiply(JSBI.subtract(outputReserve.quotient, outputAmount.quotient), _997)
     const inputAmount = CurrencyAmount.fromRawAmount(
       outputAmount.currency.equals(this.token0) ? this.token1 : this.token0,
-      JSBI.add(JSBI.divide(numerator, denominator), ONE)
+      JSBI.add(JSBI.divide(numerator, denominator), ONE),
     )
     return [inputAmount, new Pair(inputReserve.add(inputAmount), outputReserve.subtract(outputAmount))]
   }
@@ -152,7 +164,7 @@ export class Pair {
   public getLiquidityMinted(
     totalSupply: CurrencyAmount<Token>,
     tokenAmountA: CurrencyAmount<Token>,
-    tokenAmountB: CurrencyAmount<Token>
+    tokenAmountB: CurrencyAmount<Token>,
   ): CurrencyAmount<Token> {
     invariant(totalSupply.currency.equals(this.liquidityToken), 'LIQUIDITY')
     const tokenAmounts = tokenAmountA.currency.sortsBefore(tokenAmountB.currency) // does safety checks
@@ -164,7 +176,7 @@ export class Pair {
     if (JSBI.equal(totalSupply.quotient, ZERO)) {
       liquidity = JSBI.subtract(
         sqrt(JSBI.multiply(tokenAmounts[0].quotient, tokenAmounts[1].quotient)),
-        MINIMUM_LIQUIDITY
+        MINIMUM_LIQUIDITY,
       )
     } else {
       const amount0 = JSBI.divide(JSBI.multiply(tokenAmounts[0].quotient, totalSupply.quotient), this.reserve0.quotient)
@@ -182,7 +194,7 @@ export class Pair {
     totalSupply: CurrencyAmount<Token>,
     liquidity: CurrencyAmount<Token>,
     feeOn: boolean = false,
-    kLast?: BigintIsh
+    kLast?: BigintIsh,
   ): CurrencyAmount<Token> {
     invariant(this.involvesToken(token), 'TOKEN')
     invariant(totalSupply.currency.equals(this.liquidityToken), 'TOTAL_SUPPLY')
@@ -213,7 +225,7 @@ export class Pair {
 
     return CurrencyAmount.fromRawAmount(
       token,
-      JSBI.divide(JSBI.multiply(liquidity.quotient, this.reserveOf(token).quotient), totalSupplyAdjusted.quotient)
+      JSBI.divide(JSBI.multiply(liquidity.quotient, this.reserveOf(token).quotient), totalSupplyAdjusted.quotient),
     )
   }
 }

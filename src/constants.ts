@@ -4,7 +4,7 @@ export const FACTORY_ADDRESSES: Record<number, string | undefined> = {
   1: undefined,
   1101: undefined,
   8453: undefined,
-  421611: '0xf3f88a800779cC0B0858019D2e09757b49abfFe6'
+  42161: '0xD99c21C96103F36BC1FA26DD6448af4DA030c1EF'
 }
 
 export const INIT_CODE_HASHES: Record<number, string | undefined> = {

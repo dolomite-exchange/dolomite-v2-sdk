@@ -4,30 +4,29 @@ import { CurrencyAmount, Price, Token, WRAPPED_CURRENCY } from '@dolomite-exchan
 import { InsufficientInputAmountError } from '../errors'
 import { computePairAddress, Pair } from './pair'
 
+const USDC = new Token(42161, '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8', 6, 'USDC.e', 'USD Coin')
+const WETH = new Token(42161, '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1', 18, 'WETH', 'WETH')
+
 describe('computePairAddress', () => {
   it('should correctly compute the pool address on mainnet', () => {
-    const tokenA = new Token(1, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 6, 'USDC', 'USD Coin')
-    const tokenB = new Token(1, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 18, 'DAI', 'DAI Stablecoin')
     const result = computePairAddress({
-      chainId: 1,
-      tokenA,
-      tokenB
+      chainId: 42161,
+      tokenA: USDC,
+      tokenB: WETH
     })
 
-    expect(result).toEqual('0xAE461cA67B15dc8dc81CE7615e0320dA1A9aB8D5')
+    expect(result).toEqual('0xb77a493A4950cAd1b049E222d62BCE14fF423c6F')
   })
   it('should give same result regardless of token order', () => {
-    const USDC = new Token(1, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 18, 'USDC', 'USD Coin')
-    const DAI = new Token(1, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 18, 'DAI', 'DAI Stablecoin')
     let tokenA = USDC
-    let tokenB = DAI
+    let tokenB = WETH
     const resultA = computePairAddress({
       chainId: 80001,
       tokenA,
       tokenB
     })
 
-    tokenA = DAI
+    tokenA = WETH
     tokenB = USDC
     const resultB = computePairAddress({
       chainId: 80001,
@@ -58,7 +57,7 @@ describe('Pair', () => {
         () =>
           new Pair(
             CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'),
-            CurrencyAmount.fromRawAmount(WRAPPED_CURRENCY[3], '100')
+            CurrencyAmount.fromRawAmount(WRAPPED_CURRENCY[1], '100')
           )
       ).toThrow('CHAIN_IDS')
     })
@@ -222,13 +221,13 @@ describe('Pair', () => {
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'),
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100')
         ).chainId
-      ).toEqual(1)
+      ).toEqual(42161)
       expect(
         new Pair(
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100'),
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100')
         ).chainId
-      ).toEqual(1)
+      ).toEqual(42161)
     })
   })
 
@@ -255,8 +254,8 @@ describe('Pair', () => {
 
   describe('miscellaneous', () => {
     it('getLiquidityMinted:0', async () => {
-      const tokenA = new Token(3, '0x0000000000000000000000000000000000000001', 18)
-      const tokenB = new Token(3, '0x0000000000000000000000000000000000000002', 18)
+      const tokenA = new Token(42161, '0x0000000000000000000000000000000000000001', 18)
+      const tokenB = new Token(42161, '0x0000000000000000000000000000000000000002', 18)
       const pair = new Pair(CurrencyAmount.fromRawAmount(tokenA, '0'), CurrencyAmount.fromRawAmount(tokenB, '0'))
 
       expect(() => {
@@ -285,8 +284,8 @@ describe('Pair', () => {
     })
 
     it('getLiquidityMinted:!0', async () => {
-      const tokenA = new Token(3, '0x0000000000000000000000000000000000000001', 18)
-      const tokenB = new Token(3, '0x0000000000000000000000000000000000000002', 18)
+      const tokenA = new Token(42161, '0x0000000000000000000000000000000000000001', 18)
+      const tokenB = new Token(42161, '0x0000000000000000000000000000000000000002', 18)
       const pair = new Pair(
         CurrencyAmount.fromRawAmount(tokenA, '10000'),
         CurrencyAmount.fromRawAmount(tokenB, '10000')
@@ -304,8 +303,8 @@ describe('Pair', () => {
     })
 
     it('getLiquidityValue:!feeOn', async () => {
-      const tokenA = new Token(3, '0x0000000000000000000000000000000000000001', 18)
-      const tokenB = new Token(3, '0x0000000000000000000000000000000000000002', 18)
+      const tokenA = new Token(42161, '0x0000000000000000000000000000000000000001', 18)
+      const tokenB = new Token(42161, '0x0000000000000000000000000000000000000002', 18)
       const pair = new Pair(CurrencyAmount.fromRawAmount(tokenA, '1000'), CurrencyAmount.fromRawAmount(tokenB, '1000'))
 
       {
@@ -345,8 +344,8 @@ describe('Pair', () => {
     })
 
     it('getLiquidityValue:feeOn', async () => {
-      const tokenA = new Token(3, '0x0000000000000000000000000000000000000001', 18)
-      const tokenB = new Token(3, '0x0000000000000000000000000000000000000002', 18)
+      const tokenA = new Token(42161, '0x0000000000000000000000000000000000000001', 18)
+      const tokenB = new Token(42161, '0x0000000000000000000000000000000000000002', 18)
       const pair = new Pair(CurrencyAmount.fromRawAmount(tokenA, '1000'), CurrencyAmount.fromRawAmount(tokenB, '1000'))
 
       const liquidityValue = pair.getLiquidityValue(
