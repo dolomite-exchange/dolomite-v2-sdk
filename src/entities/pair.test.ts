@@ -11,7 +11,7 @@ describe('computePairAddress', () => {
     const result = computePairAddress({
       chainId: 1,
       tokenA,
-      tokenB,
+      tokenB
     })
 
     expect(result).toEqual('0xAE461cA67B15dc8dc81CE7615e0320dA1A9aB8D5')
@@ -24,7 +24,7 @@ describe('computePairAddress', () => {
     const resultA = computePairAddress({
       chainId: 80001,
       tokenA,
-      tokenB,
+      tokenB
     })
 
     tokenA = DAI
@@ -32,7 +32,7 @@ describe('computePairAddress', () => {
     const resultB = computePairAddress({
       chainId: 80001,
       tokenA,
-      tokenB,
+      tokenB
     })
 
     expect(resultA).toEqual(resultB)
@@ -58,8 +58,8 @@ describe('Pair', () => {
         () =>
           new Pair(
             CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'),
-            CurrencyAmount.fromRawAmount(WRAPPED_CURRENCY[3], '100'),
-          ),
+            CurrencyAmount.fromRawAmount(WRAPPED_CURRENCY[3], '100')
+          )
       ).toThrow('CHAIN_IDS')
     })
   })
@@ -67,7 +67,7 @@ describe('Pair', () => {
   describe('#getAddress', () => {
     it('returns the correct address for arbitrum one', () => {
       expect(Pair.getAddress(ARBITRUM_ONE_WETH, ARBITRUM_ONE_USDC, 42161)).toEqual(
-        '0xb77a493A4950cAd1b049E222d62BCE14fF423c6F',
+        '0xb77a493A4950cAd1b049E222d62BCE14fF423c6F'
       )
     })
   })
@@ -77,16 +77,14 @@ describe('Pair', () => {
       expect(
         new Pair(
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'),
-          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100'),
-        )
-          .token0,
+          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100')
+        ).token0
       ).toEqual(ARBITRUM_ONE_DAI)
       expect(
         new Pair(
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100'),
-          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'),
-        )
-          .token0,
+          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100')
+        ).token0
       ).toEqual(ARBITRUM_ONE_DAI)
     })
   })
@@ -96,16 +94,14 @@ describe('Pair', () => {
       expect(
         new Pair(
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'),
-          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100'),
-        )
-          .token1,
+          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100')
+        ).token1
       ).toEqual(ARBITRUM_ONE_USDC)
       expect(
         new Pair(
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100'),
-          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'),
-        )
-          .token1,
+          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100')
+        ).token1
       ).toEqual(ARBITRUM_ONE_USDC)
     })
   })
@@ -115,16 +111,14 @@ describe('Pair', () => {
       expect(
         new Pair(
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'),
-          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '101'),
-        )
-          .reserve0,
+          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '101')
+        ).reserve0
       ).toEqual(CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '101'))
       expect(
         new Pair(
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '101'),
-          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'),
-        )
-          .reserve0,
+          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100')
+        ).reserve0
       ).toEqual(CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '101'))
     })
   })
@@ -134,16 +128,14 @@ describe('Pair', () => {
       expect(
         new Pair(
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'),
-          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '101'),
-        )
-          .reserve1,
+          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '101')
+        ).reserve1
       ).toEqual(CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'))
       expect(
         new Pair(
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '101'),
-          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'),
-        )
-          .reserve1,
+          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100')
+        ).reserve1
       ).toEqual(CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'))
     })
   })
@@ -153,16 +145,14 @@ describe('Pair', () => {
       expect(
         new Pair(
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '101'),
-          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100'),
-        )
-          .token0Price,
+          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100')
+        ).token0Price
       ).toEqual(new Price(ARBITRUM_ONE_DAI, ARBITRUM_ONE_USDC, '100', '101'))
       expect(
         new Pair(
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100'),
-          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '101'),
-        )
-          .token0Price,
+          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '101')
+        ).token0Price
       ).toEqual(new Price(ARBITRUM_ONE_DAI, ARBITRUM_ONE_USDC, '100', '101'))
     })
   })
@@ -172,16 +162,14 @@ describe('Pair', () => {
       expect(
         new Pair(
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '101'),
-          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100'),
-        )
-          .token1Price,
+          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100')
+        ).token1Price
       ).toEqual(new Price(ARBITRUM_ONE_USDC, ARBITRUM_ONE_DAI, '101', '100'))
       expect(
         new Pair(
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100'),
-          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '101'),
-        )
-          .token1Price,
+          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '101')
+        ).token1Price
       ).toEqual(new Price(ARBITRUM_ONE_USDC, ARBITRUM_ONE_DAI, '101', '100'))
     })
   })
@@ -189,7 +177,7 @@ describe('Pair', () => {
   describe('#priceOf', () => {
     const pair = new Pair(
       CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '101'),
-      CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100'),
+      CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100')
     )
     it('returns price of token in terms of other token', () => {
       expect(pair.priceOf(ARBITRUM_ONE_DAI)).toEqual(pair.token0Price)
@@ -206,14 +194,14 @@ describe('Pair', () => {
       expect(
         new Pair(
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'),
-          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '101'),
-        ).reserveOf(ARBITRUM_ONE_USDC),
+          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '101')
+        ).reserveOf(ARBITRUM_ONE_USDC)
       ).toEqual(CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'))
       expect(
         new Pair(
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '101'),
-          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'),
-        ).reserveOf(ARBITRUM_ONE_USDC),
+          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100')
+        ).reserveOf(ARBITRUM_ONE_USDC)
       ).toEqual(CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'))
     })
 
@@ -221,8 +209,8 @@ describe('Pair', () => {
       expect(() =>
         new Pair(
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '101'),
-          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'),
-        ).reserveOf(WRAPPED_CURRENCY[1]),
+          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100')
+        ).reserveOf(WRAPPED_CURRENCY[1])
       ).toThrow('TOKEN')
     })
   })
@@ -232,16 +220,14 @@ describe('Pair', () => {
       expect(
         new Pair(
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'),
-          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100'),
-        )
-          .chainId,
+          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100')
+        ).chainId
       ).toEqual(1)
       expect(
         new Pair(
           CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100'),
-          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'),
-        )
-          .chainId,
+          CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100')
+        ).chainId
       ).toEqual(1)
     })
   })
@@ -250,20 +236,20 @@ describe('Pair', () => {
     expect(
       new Pair(
         CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'),
-        CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100'),
-      ).involvesToken(ARBITRUM_ONE_USDC),
+        CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100')
+      ).involvesToken(ARBITRUM_ONE_USDC)
     ).toEqual(true)
     expect(
       new Pair(
         CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'),
-        CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100'),
-      ).involvesToken(ARBITRUM_ONE_DAI),
+        CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100')
+      ).involvesToken(ARBITRUM_ONE_DAI)
     ).toEqual(true)
     expect(
       new Pair(
         CurrencyAmount.fromRawAmount(ARBITRUM_ONE_USDC, '100'),
-        CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100'),
-      ).involvesToken(WRAPPED_CURRENCY[1]),
+        CurrencyAmount.fromRawAmount(ARBITRUM_ONE_DAI, '100')
+      ).involvesToken(WRAPPED_CURRENCY[1])
     ).toEqual(false)
   })
 
@@ -277,7 +263,7 @@ describe('Pair', () => {
         pair.getLiquidityMinted(
           CurrencyAmount.fromRawAmount(pair.liquidityToken, '0'),
           CurrencyAmount.fromRawAmount(tokenA, '1000'),
-          CurrencyAmount.fromRawAmount(tokenB, '1000'),
+          CurrencyAmount.fromRawAmount(tokenB, '1000')
         )
       }).toThrow(InsufficientInputAmountError)
 
@@ -285,14 +271,14 @@ describe('Pair', () => {
         pair.getLiquidityMinted(
           CurrencyAmount.fromRawAmount(pair.liquidityToken, '0'),
           CurrencyAmount.fromRawAmount(tokenA, '1000000'),
-          CurrencyAmount.fromRawAmount(tokenB, '1'),
+          CurrencyAmount.fromRawAmount(tokenB, '1')
         )
       }).toThrow(InsufficientInputAmountError)
 
       const liquidity = pair.getLiquidityMinted(
         CurrencyAmount.fromRawAmount(pair.liquidityToken, '0'),
         CurrencyAmount.fromRawAmount(tokenA, '1001'),
-        CurrencyAmount.fromRawAmount(tokenB, '1001'),
+        CurrencyAmount.fromRawAmount(tokenB, '1001')
       )
 
       expect(liquidity.quotient.toString()).toEqual('1')
@@ -303,7 +289,7 @@ describe('Pair', () => {
       const tokenB = new Token(3, '0x0000000000000000000000000000000000000002', 18)
       const pair = new Pair(
         CurrencyAmount.fromRawAmount(tokenA, '10000'),
-        CurrencyAmount.fromRawAmount(tokenB, '10000'),
+        CurrencyAmount.fromRawAmount(tokenB, '10000')
       )
 
       expect(
@@ -311,9 +297,9 @@ describe('Pair', () => {
           .getLiquidityMinted(
             CurrencyAmount.fromRawAmount(pair.liquidityToken, '10000'),
             CurrencyAmount.fromRawAmount(tokenA, '2000'),
-            CurrencyAmount.fromRawAmount(tokenB, '2000'),
+            CurrencyAmount.fromRawAmount(tokenB, '2000')
           )
-          .quotient.toString(),
+          .quotient.toString()
       ).toEqual('2000')
     })
 
@@ -327,7 +313,7 @@ describe('Pair', () => {
           tokenA,
           CurrencyAmount.fromRawAmount(pair.liquidityToken, '1000'),
           CurrencyAmount.fromRawAmount(pair.liquidityToken, '1000'),
-          false,
+          false
         )
         expect(liquidityValue.currency.equals(tokenA)).toBe(true)
         expect(liquidityValue.quotient.toString()).toBe('1000')
@@ -339,7 +325,7 @@ describe('Pair', () => {
           tokenA,
           CurrencyAmount.fromRawAmount(pair.liquidityToken, '1000'),
           CurrencyAmount.fromRawAmount(pair.liquidityToken, '500'),
-          false,
+          false
         )
         expect(liquidityValue.currency.equals(tokenA)).toBe(true)
         expect(liquidityValue.quotient.toString()).toBe('500')
@@ -351,7 +337,7 @@ describe('Pair', () => {
           tokenB,
           CurrencyAmount.fromRawAmount(pair.liquidityToken, '1000'),
           CurrencyAmount.fromRawAmount(pair.liquidityToken, '1000'),
-          false,
+          false
         )
         expect(liquidityValue.currency.equals(tokenB)).toBe(true)
         expect(liquidityValue.quotient.toString()).toBe('1000')
@@ -368,7 +354,7 @@ describe('Pair', () => {
         CurrencyAmount.fromRawAmount(pair.liquidityToken, '500'),
         CurrencyAmount.fromRawAmount(pair.liquidityToken, '500'),
         true,
-        '250000', // 500 ** 2
+        '250000' // 500 ** 2
       )
       expect(liquidityValue.currency.equals(tokenA)).toBe(true)
       expect(liquidityValue.quotient.toString()).toBe('917') // ceiling(1000 - (500 * (1 / 6)))
